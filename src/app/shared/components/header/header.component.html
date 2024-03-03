@@ -1,0 +1,15 @@
+<mat-toolbar class="wrapper">
+  <button mat-raised-button [routerLink]="['/']" routerLinkActive="">My recipes</button>
+  <button mat-raised-button [routerLink]="['/global-list']">Global List</button>
+  <div class="auth">
+    <button mat-raised-button color="primary" [routerLink]="['/new-recipe']">
+      New Recipes
+    </button>
+    <button mat-raised-button color="primary" [routerLink]="['/login']">
+      Login
+    </button>
+    <button mat-raised-button color="primary" [routerLink]="['/signup']">
+      Signup
+    </button>
+  </div>
+</mat-toolbar>

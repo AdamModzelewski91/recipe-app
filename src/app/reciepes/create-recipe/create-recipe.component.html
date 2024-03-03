@@ -1,0 +1,44 @@
+<mat-card>
+  <h1>Create your new recipes!</h1>
+  <form class="wrapper">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Select type of dish:</mat-label>
+      <select matNativeControl>
+        <option label="Pick a dish"></option>
+        <option value="cakes">Cakes</option>
+        <option value="curries">Curries</option>
+        <option value="desserts">Desserts</option>
+        <option value="soup">Soup</option>
+        <option value="salad">Salad</option>
+        <option value="snack">Snack</option>
+        <option value="sandwich">Sandwich</option>
+      </select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Difficult:</mat-label>
+      <select matNativeControl>
+        <option label="Pick a difficulty"></option>
+        <option value="easy">Easy</option>
+        <option value="moderate">Moderate</option>
+        <option value="hard">Hard</option>
+      </select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Prep time:</mat-label>
+      <input type="number" matInput placeholder="min">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Cook time:</mat-label>
+      <input type="number" matInput placeholder="min">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Serves:</mat-label>
+      <input type="number" matInput>
+    </mat-form-field>
+  </form>
+  <app-drag-and-drop [(images)]="uploadedImages"></app-drag-and-drop>
+</mat-card>
