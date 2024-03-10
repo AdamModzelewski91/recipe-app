@@ -1,0 +1,6 @@
+{
+  "prettier.arrowParens": "avoid",
+  "prettier.parser": "",
+  "prettier.printWidth": 125,
+  "prettier.proseWrap": "always"
+}

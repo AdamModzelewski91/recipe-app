@@ -1,44 +1,80 @@
 <mat-card>
   <h1>Create your new recipes!</h1>
-  <form class="wrapper">
+  <form class="wrapper" (ngSubmit)="onSubmit()" [formGroup]="form">
     <mat-form-field>
       <mat-label>Name</mat-label>
-      <input matInput>
+      <input matInput formControlName="name">
     </mat-form-field>
     <mat-form-field>
       <mat-label>Select type of dish:</mat-label>
-      <select matNativeControl>
-        <option label="Pick a dish"></option>
-        <option value="cakes">Cakes</option>
-        <option value="curries">Curries</option>
-        <option value="desserts">Desserts</option>
+      <select matNativeControl formControlName="dish">
+        <option value="cake">Cake</option>
+        <option value="currie">Currie</option>
+        <option value="dessert">Dessert</option>
         <option value="soup">Soup</option>
         <option value="salad">Salad</option>
         <option value="snack">Snack</option>
         <option value="sandwich">Sandwich</option>
-      </select>
+      </select>     
+      @if (form.get('prepTime').getError('required')) {
+        <mat-error>Choose your dish!</mat-error>
+      }  
     </mat-form-field>
     <mat-form-field>
       <mat-label>Difficult:</mat-label>
-      <select matNativeControl>
-        <option label="Pick a difficulty"></option>
+      <select matNativeControl formControlName="difficult">
         <option value="easy">Easy</option>
         <option value="moderate">Moderate</option>
         <option value="hard">Hard</option>
       </select>
+      @if (form.get('prepTime').getError('required')) {
+        <mat-error>Choose difficulty!</mat-error>
+      } 
     </mat-form-field>
     <mat-form-field>
       <mat-label>Prep time:</mat-label>
-      <input type="number" matInput placeholder="min">
+      <input type="text" matInput placeholder="min" formControlName="prepTime">
+      @if (form.get('prepTime').getError('required')) {
+        <mat-error>Calories required!</mat-error>
+      } 
+      @if (form.get('prepTime').getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+      }
+      @if (form.get('prepTime').getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+      }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Cook time:</mat-label>
-      <input type="number" matInput placeholder="min">
+      <input type="text" matInput placeholder="min" formControlName="cookTime">
+      @if (form.get('cookTime').getError('required')) {
+        <mat-error>Cook time required!</mat-error>
+      } 
+      @if (form.get('cookTime').getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+      }
+      @if (form.get('cookTime').getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+      }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Serves:</mat-label>
-      <input type="number" matInput>
+      <input type="text" matInput formControlName="serves">
+      @if (form.get('serves').getError('required')) {
+        <mat-error>Serves amount required!</mat-error>
+      } 
+      @if (form.get('serves').getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+      }
+      @if (form.get('serves').getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+      }
     </mat-form-field>
+    <app-nutritions-table formGroupName="nutritions"></app-nutritions-table>
+    <app-drag-and-drop [(images)]="uploadedImages"></app-drag-and-drop>
+    <div class="form-buttons">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Submit</button>
+      <button mat-raised-button color="warn" type="button" (click)="onResetForm()">Clear</button>
+    </div>
   </form>
-  <app-drag-and-drop [(images)]="uploadedImages"></app-drag-and-drop>
 </mat-card>

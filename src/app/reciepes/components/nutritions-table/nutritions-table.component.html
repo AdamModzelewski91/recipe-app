@@ -1,0 +1,30 @@
+<mat-card class="nutritions">
+  <table mat-table [formGroup]="form">
+    <tr>
+      <th mat-header-cell class="header">
+        <label matTextPrefix>Nutricitions</label>
+        <label matTextSuffix>Calories (100 g):</label>
+      </th>
+    </tr>
+    <tr>
+      <td mat-cell>
+        @for (item of nutritions; track $index) {
+          <mat-form-field>
+            <label matTextPrefix>{{item.name | titlecase}}</label>
+            <input type="text" [formControlName]="item.name" matInput>
+            <label matTextSuffix>{{item.unit}}</label>
+            @if (form.get(item.name)?.getError('required')) {
+              <mat-error><span>{{item.name | titlecase}}</span> required!</mat-error>
+            } 
+            @if (form.get(item.name)?.getError('max')) {
+              <mat-error>Max value reached!</mat-error>
+            }
+            @if (form.get(item.name)?.getError('forbiddenName')) {
+              <mat-error>Only numbers!</mat-error>
+            }
+          </mat-form-field>
+        }
+      </td>
+    </tr>
+  </table>
+</mat-card>
