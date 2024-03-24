@@ -1,4 +1,3 @@
-@for (item of myList(); track $index) {
-  <div>{{item.name}}</div>
-}
 <pre>{{myList() | json}}</pre>
+
+<app-recipes-table [reciepesList]="myList()"></app-recipes-table>
