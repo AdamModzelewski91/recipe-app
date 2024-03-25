@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FormatArrayStringsPipe implements PipeTransform {
 
-  transform(value: string[], ...args: unknown[]): unknown {
+  transform(value: string[]): string {
     let newString = value[0];
     for (let i = 1; i < value.length; i++) {    
       newString += i === value.length - 1 ? ' and ' + value[i] : ', ' + value[i];

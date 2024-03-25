@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { CreateRecipeComponent } from './reciepes/create-recipe/create-recipe.component';
-import { MyRecipeListComponent } from './reciepes/my-recipe-list/my-recipe-list.component';
-import { GlobalRecipeListComponent } from './reciepes/global-recipe-list/global-recipe-list.component';
+import { CreateRecipeComponent } from './recipes/create-recipe/create-recipe.component';
+import { MyRecipeListComponent } from './recipes/my-recipe-list/my-recipe-list.component';
+import { GlobalRecipeListComponent } from './recipes/global-recipe-list/global-recipe-list.component';
 import { LoginComponent } from './shared/components/login/login.component';
 import { SignupComponent } from './shared/components/signup/signup.component';
 

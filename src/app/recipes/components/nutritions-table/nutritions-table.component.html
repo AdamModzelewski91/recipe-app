@@ -8,7 +8,7 @@
     </tr>
     <tr>
       <td mat-cell>
-        @for (item of nutritions; track $index) {
+        @for (item of nutritions(); track $index) {
           <mat-form-field>
             <label matTextPrefix>{{item.name | titlecase}}</label>
             <input type="text" [formControlName]="item.name" matInput>

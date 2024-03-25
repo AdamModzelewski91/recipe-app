@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ControlContainer, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { Nutritions } from '../../models/recipe.type';
+
+export const nutritions: {name: keyof Nutritions, unit: string}[] = [
+  { name: 'calories', unit: 'kJ/kcal'},
+  { name: 'fat', unit: 'g'},
+  { name: 'carbohydrate', unit: 'g'},
+  { name: 'protein', unit: 'g'},
+];
 
 @Component({
   selector: 'app-nutritions-table',
@@ -14,12 +22,7 @@ import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 export class NutritionsTableComponent implements OnInit{
   form!: FormGroup;
 
-  nutritions = [
-    { name: 'calories', unit: 'kJ/kcal'},
-    { name: 'fat', unit: 'g'},
-    { name: 'carbohydrate', unit: 'g'},
-    { name: 'protein', unit: 'g'},
-  ]
+  nutritions = signal(nutritions);
 
   constructor(private controlContainer: ControlContainer) {
   }

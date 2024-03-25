@@ -1,0 +1,33 @@
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  justify-content: center;
+}
+
+.nutrition {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 3px;
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      font-size: 16px;
+      margin: 5px;
+    }
+  }
+
+  .values {
+    border-top: 2px solid rgb(180, 180, 180);
+
+    .nutrition__item {
+      display: flex;
+      justify-content: space-between;
+
+      p {
+        margin: 3px;
+      }
+    }
+  }
+}
