@@ -1,3 +1,30 @@
-<pre>{{myList() | json}}</pre>
-
-<app-recipes-table [recipesList]="myList()"></app-recipes-table>
+<app-recipes-table [recipesList]="myList()">
+  <ng-template let-index let-recipeId="recipeId">
+    <div class="group-btn">
+      <button
+        type="button"
+        mat-raised-button
+        color="warn"
+        (click)="onPublish($event, index)"
+      >
+        Delete
+      </button>
+      <button
+        type="button"
+        [routerLink]="'new-recipe/' + recipeId"
+        mat-raised-button
+        color="accent"
+      >
+        Edit
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        (click)="onPublish($event, index)"
+      >
+        Publish
+      </button>
+    </div>
+  </ng-template>
+</app-recipes-table>

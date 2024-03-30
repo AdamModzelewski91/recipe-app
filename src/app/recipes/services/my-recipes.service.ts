@@ -1,14 +1,16 @@
-import { Injectable, signal } from '@angular/core';
-import { RecipeWithPhotos } from '../models/recipe.type';
+import { Injectable, WritableSignal, signal } from '@angular/core';
+import { RecipeWithPhotos, ResponseRecipeWithPhotos } from '../models/recipe.type';
+import { GlobalRecipesService } from './global-recipes.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MyRecipesService {
 
-  myRecipes = signal<RecipeWithPhotos[]>([
+  myRecipes = signal<ResponseRecipeWithPhotos[]>([
     {
-      name: "Apple pie",
+      id: "13sda22wdqwd32",
+      name: "Apple pie 1",
       dish: "cake",
       difficult: "moderate",
       prepTime: "20",
@@ -23,7 +25,8 @@ export class MyRecipesService {
       photos: []
     },
     {
-      name: "Apple pie",
+      id: "aaaa",
+      name: "Apple pie 2",
       dish: "cake",
       difficult: "moderate",
       prepTime: "20",
@@ -38,7 +41,8 @@ export class MyRecipesService {
       photos: []
     },
     {
-      name: "Apple pie",
+      id: "1bbb",
+      name: "Apple pie 3",
       dish: "cake",
       difficult: "moderate",
       prepTime: "20",
@@ -52,11 +56,28 @@ export class MyRecipesService {
       },
       photos: []
     },
-  ])
+  ]);
 
-  constructor() { }
+  addRecipe(recipe: RecipeWithPhotos) {
+    this.myRecipes().push({...recipe, id: 'asdadasd'});
+  }
 
-  addNewRecipe(recipe: RecipeWithPhotos) {
-    this.myRecipes().push(recipe);
+  getRecipe(id: string): ResponseRecipeWithPhotos {
+    return this.myRecipes().find(x => x.id === id) as ResponseRecipeWithPhotos;
+  }
+
+  updateRecipe(recipe: ResponseRecipeWithPhotos): void {
+    const index = this.myRecipes().findIndex(x => x.id === recipe.id);
+    this.myRecipes().splice(index, 1, recipe);
+  }
+
+  publishRecipe(index: number): void {
+    const toPublish = this.myRecipes().splice(index, 1);
+    // this.globalRecipeList.globalRecipes().push({...toPublish[0], publish: true });
+    // this.myRecipes.update(x => [{...x[index], publish: true}]);
+  }
+
+  deleteRecipe(index: number): void {
+    this.myRecipes().splice(index, 1);
   }
 }

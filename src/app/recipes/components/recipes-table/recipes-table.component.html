@@ -6,14 +6,32 @@
           {{ recipe.name }}
         </mat-panel-title>
         <mat-panel-description>
-          <p>Difficult: <span>{{ recipe.difficult }}</span></p>          
+          <p>
+            Difficult: <span>{{ recipe.difficult }}</span>
+          </p>
+          <ng-template
+            [ngTemplateOutlet]="itemTemplate"
+            [ngTemplateOutletContext]="{
+              $implicit: $index,
+              recipeId: recipe.id
+            }"
+          >
+          </ng-template>
         </mat-panel-description>
       </mat-expansion-panel-header>
       <mat-chip-listbox aria-label="meal-details">
-        <mat-chip>Prep: <span>{{ recipe.prepTime }}</span> min</mat-chip>
-        <mat-chip>Cook: <span>{{ recipe.cookTime }}</span> min</mat-chip>
-        <mat-chip>Serves: <span>{{ recipe.serves }}</span></mat-chip>
-        <mat-chip>dish: <span>{{ recipe.dish }}</span></mat-chip>
+        <mat-chip
+          >Prep: <span>{{ recipe.prepTime }}</span> min</mat-chip
+        >
+        <mat-chip
+          >Cook: <span>{{ recipe.cookTime }}</span> min</mat-chip
+        >
+        <mat-chip
+          >Serves: <span>{{ recipe.serves }}</span></mat-chip
+        >
+        <mat-chip
+          >dish: <span>{{ recipe.dish }}</span></mat-chip
+        >
       </mat-chip-listbox>
       <mat-card class="nutrition">
         <div class="title">
@@ -23,16 +41,17 @@
         <div class="values">
           @for (item of nutritions(); track $index) {
             <div class="nutrition__item">
-              <p>{{item.name | titlecase}}</p>
-              <p><span>{{recipe.nutritions[item.name]}}</span> {{item.unit}}</p>
+              <p>{{ item.name | titlecase }}</p>
+              <p>
+                <span>{{ recipe.nutritions[item.name] }}</span> {{ item.unit }}
+              </p>
             </div>
           }
         </div>
       </mat-card>
-
       <p>Photos:</p>
       @for (item of recipe.photos; track $index) {
-        <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" >
+        <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" />
       }
     </mat-expansion-panel>
   }

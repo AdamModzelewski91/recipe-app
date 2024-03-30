@@ -18,3 +18,14 @@ export type Nutritions = {
 export interface RecipeWithPhotos extends Recipe {
   photos: HTMLImageElement[];
 }
+
+export interface ResponseRecipeWithPhotos extends RecipeWithPhotos {
+  id: string;
+}
+
+
+export interface ResponseGlobalRecipes extends ResponseRecipeWithPhotos {
+  userId: string;
+  likes: number;
+  dislikes: number;
+}

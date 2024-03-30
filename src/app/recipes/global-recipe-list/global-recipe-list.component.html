@@ -1,1 +1,31 @@
-<p>global-recipe-list works!</p>
+<app-recipes-table [recipesList]="globalRecipes()">
+  <ng-template let-index>
+    <div class="group-btn">
+      <button
+        type="button"
+        mat-raised-button
+        color="accent"
+        [matBadge]="3"
+        (click)="onLike($event, index)"
+      >
+        Like
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="warn"
+        (click)="onDislike($event, index)"
+      >
+        Dislike
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        (click)="onUnpublish($event, index)"
+      >
+        Unpublish
+      </button>
+    </div>
+  </ng-template>
+</app-recipes-table>
