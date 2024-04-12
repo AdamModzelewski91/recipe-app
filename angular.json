@@ -23,6 +23,11 @@
             "polyfills": [
               "zone.js"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/mixins"
+              ]
+            },
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -99,5 +104,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

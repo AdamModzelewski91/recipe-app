@@ -2,29 +2,20 @@
   <ng-template let-index>
     <div class="group-btn">
       <button
+        [ngClass]="{ 'active' : globalRecipes()[index].votes.liked}"
         type="button"
         mat-raised-button
-        color="accent"
-        [matBadge]="3"
         (click)="onLike($event, index)"
       >
-        Like
+        <mat-icon fontIcon="thumb_up" aria-hidden="false" aria-label="Like"></mat-icon> | <span>{{globalRecipes()[index].votes.likes}}</span>
       </button>
       <button
+        [ngClass]="{ 'active' : globalRecipes()[index].votes.disliked}"
         type="button"
         mat-raised-button
-        color="warn"
         (click)="onDislike($event, index)"
       >
-        Dislike
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        (click)="onUnpublish($event, index)"
-      >
-        Unpublish
+      <mat-icon fontIcon="thumb_down" aria-hidden="false" aria-label="Dislike"></mat-icon> | <span>{{globalRecipes()[index].votes.dislikes}}</span>
       </button>
     </div>
   </ng-template>

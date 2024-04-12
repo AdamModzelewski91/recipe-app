@@ -1,15 +1,17 @@
 <mat-toolbar class="wrapper">
-  <button mat-raised-button [routerLink]="['/']" routerLinkActive="">My recipes</button>
-  <button mat-raised-button [routerLink]="['/global-list']">Global List</button>
+  @if (true) {
+  <button mat-raised-button [routerLink]="['/my-recipe']" routerLinkActive="active">My recipes</button>
+  <button mat-raised-button [routerLink]="['/global-list']" routerLinkActive="active">Global List</button>
+  <button mat-raised-button [routerLink]="['/new-recipe']" routerLinkActive="active" style="margin-left: auto;">New
+    Recipes</button>
+  } @else {
   <div class="auth">
-    <button mat-raised-button color="primary" [routerLink]="['/new-recipe']">
-      New Recipes
-    </button>
-    <button mat-raised-button color="primary" [routerLink]="['/login']">
+    <button mat-raised-button color="primary" [routerLink]="['/login']" routerLinkActive="active">
       Login
     </button>
-    <button mat-raised-button color="primary" [routerLink]="['/signup']">
+    <button mat-raised-button color="primary" [routerLink]="['/signup']" routerLinkActive="active">
       Signup
     </button>
   </div>
+  }
 </mat-toolbar>

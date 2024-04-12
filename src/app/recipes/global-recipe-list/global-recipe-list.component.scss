@@ -1,8 +1,15 @@
+@import 'global';
+
 .group-btn {
   display: flex;
   gap: 5px;
 
   button {
-    width: 70px;
+    border: 1px solid $default-button-border;
+
+    &.active {
+      border: 1px solid $active-button;
+      color: $active-button;
+    }
   }
 }

@@ -1,58 +1,45 @@
 <mat-accordion>
   @for (recipe of recipesList(); track $index) {
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{ recipe.name }}
-        </mat-panel-title>
-        <mat-panel-description>
-          <p>
-            Difficult: <span>{{ recipe.difficult }}</span>
-          </p>
-          <ng-template
-            [ngTemplateOutlet]="itemTemplate"
-            [ngTemplateOutletContext]="{
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ recipe.name }}
+      </mat-panel-title>
+      <mat-panel-description>
+        <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{
               $implicit: $index,
               recipeId: recipe.id
-            }"
-          >
-          </ng-template>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <mat-chip-listbox aria-label="meal-details">
-        <mat-chip
-          >Prep: <span>{{ recipe.prepTime }}</span> min</mat-chip
-        >
-        <mat-chip
-          >Cook: <span>{{ recipe.cookTime }}</span> min</mat-chip
-        >
-        <mat-chip
-          >Serves: <span>{{ recipe.serves }}</span></mat-chip
-        >
-        <mat-chip
-          >dish: <span>{{ recipe.dish }}</span></mat-chip
-        >
-      </mat-chip-listbox>
-      <mat-card class="nutrition">
-        <div class="title">
-          <h1>Nutrictions</h1>
-          <h1>Calories (100 g)</h1>
+            }">
+        </ng-template>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-chip-listbox aria-label="meal-details">
+      <mat-chip>Prep: <span>{{ recipe.prepTime }}</span> min</mat-chip>
+      <mat-chip>Cook: <span>{{ recipe.cookTime }}</span> min</mat-chip>
+      <mat-chip>Serves: <span>{{ recipe.serves }}</span></mat-chip>
+      <mat-chip>dish: <span>{{ recipe.dish }}</span></mat-chip>
+      <mat-chip>difficult: <span>{{ recipe.difficult }}</span></mat-chip>
+    </mat-chip-listbox>
+    <mat-card class="nutrition">
+      <div class="title">
+        <h1>Nutrictions</h1>
+        <h1>Calories (100 g)</h1>
+      </div>
+      <div class="values">
+        @for (item of nutritions(); track $index) {
+        <div class="nutrition__item">
+          <p>{{ item.name | titlecase }}</p>
+          <p>
+            <span>{{ recipe.nutritions[item.name] }}</span> {{ item.unit }}
+          </p>
         </div>
-        <div class="values">
-          @for (item of nutritions(); track $index) {
-            <div class="nutrition__item">
-              <p>{{ item.name | titlecase }}</p>
-              <p>
-                <span>{{ recipe.nutritions[item.name] }}</span> {{ item.unit }}
-              </p>
-            </div>
-          }
-        </div>
-      </mat-card>
-      <p>Photos:</p>
-      @for (item of recipe.photos; track $index) {
-        <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" />
-      }
-    </mat-expansion-panel>
+        }
+      </div>
+    </mat-card>
+    <p>Photos:</p>
+    @for (item of recipe.photos; track $index) {
+    <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" />
+    }
+  </mat-expansion-panel>
   }
 </mat-accordion>

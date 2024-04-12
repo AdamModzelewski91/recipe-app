@@ -1,16 +1,22 @@
 :host {
   display: block;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .mat-expansion-panel-header-title {
-  justify-content: center;
+  justify-content: left;
   font-size: 20px;
 }
 
+.mat-expansion-panel-header{
+  height: auto;
+  padding: 10px 24px 10px 24px;
+}
+
 .mat-expansion-panel-header-description {
-  justify-content: space-between;
+  flex-grow: 1;
+  justify-content: right;
 }
 
 .nutrition {
@@ -29,7 +35,7 @@
   }
 
   .values {
-    border-top: 2px solid rgb(180, 180, 180);
+    border-top: 2px solid #b4b4b4;
 
     .nutrition__item {
       display: flex;

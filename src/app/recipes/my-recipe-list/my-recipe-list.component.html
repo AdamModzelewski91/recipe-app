@@ -1,30 +1,22 @@
 <app-recipes-table [recipesList]="myList()">
   <ng-template let-index let-recipeId="recipeId">
     <div class="group-btn">
-      <button
-        type="button"
-        mat-raised-button
-        color="warn"
-        (click)="onPublish($event, index)"
-      >
-        Delete
+      <button type="button" mat-raised-button color="warn" (click)="onPublish($event, index)">
+        <mat-icon fontIcon="delete" aria-hidden="false" aria-label="Edit"></mat-icon>
       </button>
-      <button
-        type="button"
-        [routerLink]="'new-recipe/' + recipeId"
-        mat-raised-button
-        color="accent"
-      >
-        Edit
+      <button type="button" mat-raised-button color="accent" [routerLink]="['/new-recipe/' + recipeId]"
+        (click)="$event.stopPropagation()" [disabled]="myList()[index].published">
+        <mat-icon fontIcon="edit" aria-hidden="false" aria-label="Edit"></mat-icon>
       </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        (click)="onPublish($event, index)"
-      >
-        Publish
+      @if (myList()[index].published) {
+      <button type="button" mat-raised-button color="primary" (click)="onUnpublish($event, index)">
+        <mat-icon fontIcon="public_off" aria-hidden="false" aria-label="Edit"></mat-icon>
       </button>
+      } @else {
+      <button type="button" mat-raised-button color="primary" (click)="onPublish($event, index)">
+        <mat-icon fontIcon="public" aria-hidden="false" aria-label="Edit"></mat-icon>
+      </button>
+      }
     </div>
   </ng-template>
 </app-recipes-table>

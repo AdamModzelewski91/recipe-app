@@ -1,42 +1,41 @@
-import { Component, computed, input, signal } from '@angular/core';
-import {
-  ResponseGlobalRecipes,
-  ResponseRecipeWithPhotos,
-} from '../models/recipe.type';
+import { Component, computed } from '@angular/core';
+import { GlobalRecipes } from '../models/recipe.type';
 import { GlobalRecipesService } from '../services/global-recipes.service';
-import {
-  ACTIONS,
-  RecipesTableComponent,
-} from '../components/recipes-table/recipes-table.component';
+import { RecipesTableComponent } from '../components/recipes-table/recipes-table.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-global-recipe-list',
   standalone: true,
-  imports: [RecipesTableComponent, MatBadgeModule, MatButtonModule],
+  imports: [
+    RecipesTableComponent,
+    MatBadgeModule,
+    MatButtonModule,
+    MatIconModule,
+    NgClass,
+  ],
   templateUrl: './global-recipe-list.component.html',
   styleUrl: './global-recipe-list.component.scss',
 })
 export class GlobalRecipeListComponent {
-  globalRecipes = computed<ResponseGlobalRecipes[]>(() =>
+  globalRecipes = computed<GlobalRecipes[]>(() =>
     this.globalRecipesService.globalRecipes(),
   );
 
-  actions = ACTIONS;
-
   constructor(private globalRecipesService: GlobalRecipesService) {}
-
-  onUnpublish(e: Event, index: number) {
-    e.stopPropagation();
-    this.globalRecipesService.unpublishRecipe(index);
-  }
 
   onLike(e: Event, index: number) {
     e.stopPropagation();
+
+    this.globalRecipesService.likeRecipe(index);
   }
 
   onDislike(e: Event, index: number) {
     e.stopPropagation();
+
+    this.globalRecipesService.dislikeRecipe(index);
   }
 }
