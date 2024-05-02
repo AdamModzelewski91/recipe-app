@@ -1,21 +1,15 @@
-<app-recipes-table [recipesList]="globalRecipes()">
+<app-recipes-table [recipesList]="globalRecipes()" (onExpend)="getPhotos($event)">
   <ng-template let-index>
     <div class="group-btn">
-      <button
-        [ngClass]="{ 'active' : globalRecipes()[index].votes.liked}"
-        type="button"
-        mat-raised-button
-        (click)="onLike($event, index)"
-      >
-        <mat-icon fontIcon="thumb_up" aria-hidden="false" aria-label="Like"></mat-icon> | <span>{{globalRecipes()[index].votes.likes}}</span>
+      <button [ngClass]="{ 'active' : globalRecipes()[index].votes.likes[0] === personId() }" type="button"
+        mat-raised-button (click)="onVote($event, index, 'like')">
+        <mat-icon fontIcon="thumb_up" aria-hidden="false" aria-label="Like"></mat-icon> |
+        <span>{{globalRecipes()[index].votes.likes.length}}</span>
       </button>
-      <button
-        [ngClass]="{ 'active' : globalRecipes()[index].votes.disliked}"
-        type="button"
-        mat-raised-button
-        (click)="onDislike($event, index)"
-      >
-      <mat-icon fontIcon="thumb_down" aria-hidden="false" aria-label="Dislike"></mat-icon> | <span>{{globalRecipes()[index].votes.dislikes}}</span>
+      <button [ngClass]="{ 'active' : globalRecipes()[index].votes.dislikes[0] === personId()}" type="button"
+        mat-raised-button (click)="onVote($event, index, 'dislike')">
+        <mat-icon fontIcon="thumb_down" aria-hidden="false" aria-label="Dislike"></mat-icon> |
+        <span>{{globalRecipes()[index].votes.dislikes.length}}</span>
       </button>
     </div>
   </ng-template>

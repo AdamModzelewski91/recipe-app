@@ -15,23 +15,53 @@ export type Nutritions = {
   protein: string;
 };
 
-export interface RecipeWithPhotos extends Recipe {
-  photos: HTMLImageElement[];
+export interface NewRecipe extends Recipe {
+  photosAlbumId: string;
+  photos: Photos[];
 }
 
-export interface MyRecipes extends RecipeWithPhotos {
+export type Photos = {
+  name: string;
+  img: string;
+  id: string;
+};
+
+export interface UpdateRecipe extends Recipe {
+  id: string;
+  removedPhotos: string;
+  photos: File[];
+  photosAlbumId: string;
+}
+
+export type GetPhotos = {
+  originalname: string;
+  mimetype: string;
+  buffer: string;
+  id: string;
+};
+
+export interface AddRecipe extends Recipe {
+  photos: File[];
+}
+
+export interface MyRecipes extends NewRecipe {
   id: string;
   published: boolean;
 }
 
+export interface ResponseMyRecipes extends MyRecipes {
+  _id: string;
+}
+
 export interface GlobalRecipes extends MyRecipes {
-  userId: string;
   votes: RecipeVotes;
 }
 
+export interface ResponseGlobalRecipes extends GlobalRecipes {
+  _id: string;
+}
+
 export interface RecipeVotes {
-  likes: number;
-  dislikes: number;
-  liked: boolean;
-  disliked: boolean;
+  likes: string[];
+  dislikes: string[];
 }

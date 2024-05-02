@@ -1,21 +1,22 @@
 <div>
-  <p>Photos (max 200kb each) :</p>
-  <div class="drag-drop-area" [ngClass]="{'uploading': this.uploading()}"  (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+  <p>Photos (max 200kb each): <span>{{preview().length}}/5</span></p>
+  <div class="drag-drop-area" [ngClass]="{'uploading': this.uploading()}" (drop)="onDrop($event)"
+    (dragover)="onDragOver($event)">
     <p>Drag and drop to automatic upload</p>
-  </div>  
+  </div>
 </div>
 <div class="img-wrapper">
-  @for (item of images(); track $index) {
-    <div class="img">
-      <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" >
-      <button mat-mini-fab class="remove-button" color="warn" (click)="removeImage($index)">
-        <mat-icon aria-hidden="false">close</mat-icon>
-      </button>
-    </div>
+  @for (item of preview(); track $index) {
+  <div class="img">
+    <img [src]="item.img" [style]="'height: 200px'" [title]="item.name">
+    <button mat-mini-fab class="remove-button" color="warn" type="button" (click)="removeImage($index)">
+      <mat-icon aria-hidden="false">close</mat-icon>
+    </button>
+  </div>
   }
-  @if (toBigFiles().length > 0) {
-    <div>
-      <p class="error-message"><span>{{ toBigFiles() | formatArrayStrings }} </span> had more than 200kb!</p>
-    </div>
+  @if (sizeErrorMessage().length > 0) {
+  <div>
+    <p class="error-message"><span>{{ sizeErrorMessage() | formatArrayStrings }} </span> had more than 200kb!</p>
+  </div>
   }
 </div>

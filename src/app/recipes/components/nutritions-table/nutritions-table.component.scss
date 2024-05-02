@@ -1,8 +1,8 @@
 .nutritions {
   padding: 20px;
-  width: 500px;
+  max-width: 500px;
   margin: 0 auto;
-  color: rgba(255, 255, 255, 0.6);
+  color: #d9d9d9;
 
   & mat-form-field input {
     text-align: end;

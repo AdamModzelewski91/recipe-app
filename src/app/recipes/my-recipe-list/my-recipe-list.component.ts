@@ -1,13 +1,14 @@
 import { Component, computed } from '@angular/core';
 import { MyRecipesService } from '../services/my-recipes.service';
 import { JsonPipe, NgFor } from '@angular/common';
-import { RecipesTableComponent } from '../components/recipes-table/recipes-table.component';
+import {
+  CurrentPhotoExtended,
+  RecipesTableComponent,
+} from '../components/recipes-table/recipes-table.component';
 import { MyRecipes } from '../models/recipe.type';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-my-recipe-list',
@@ -19,7 +20,6 @@ import { filter, map } from 'rxjs';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    HttpClientModule,
   ],
   templateUrl: './my-recipe-list.component.html',
   styleUrl: './my-recipe-list.component.scss',
@@ -27,10 +27,7 @@ import { filter, map } from 'rxjs';
 export class MyRecipeListComponent {
   myList = computed<MyRecipes[]>(() => this.myRecipesService.myRecipes());
 
-  constructor(
-    private myRecipesService: MyRecipesService,
-    private http: HttpClient,
-  ) {}
+  constructor(private myRecipesService: MyRecipesService) {}
 
   onPublish(e: Event, index: number): void {
     e.stopPropagation();
@@ -38,15 +35,26 @@ export class MyRecipeListComponent {
     this.myRecipesService.publishRecipe(index);
   }
 
-  onUnpublish(e: Event, index: number): void {
-    e.stopPropagation();
-
-    this.myRecipesService.unpublishRecipe(index);
-  }
-
   onDelete(e: Event, index: number): void {
     e.stopPropagation();
 
     this.myRecipesService.deleteRecipe(index);
+  }
+
+  getPhotos(event: CurrentPhotoExtended) {
+    if (this.myList()[event.index].photos.length > 0) return;
+    this.myRecipesService
+      .getPhotos(event.photosAlbumId)
+      .subscribe(async (photos) => {
+        for (let photo of photos) {
+          const obj = {
+            name: photo.originalname,
+            img: `data:${photo.mimetype};base64,` + photo.buffer,
+            id: photo.id,
+          };
+
+          this.myList()[event.index].photos.push(obj);
+        }
+      });
   }
 }

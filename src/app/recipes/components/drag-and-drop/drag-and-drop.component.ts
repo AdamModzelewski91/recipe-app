@@ -1,7 +1,7 @@
 import { Component, model, signal } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { NgClass } from '@angular/common';
 import { FormatArrayStringsPipe } from '../../../shared/pipes/format-array-strings.pipe';
 
@@ -10,15 +10,16 @@ import { FormatArrayStringsPipe } from '../../../shared/pipes/format-array-strin
   standalone: true,
   imports: [MatIconModule, MatButtonModule, NgClass, FormatArrayStringsPipe],
   templateUrl: './drag-and-drop.component.html',
-  styleUrl: './drag-and-drop.component.scss'
+  styleUrl: './drag-and-drop.component.scss',
 })
 export class DragAndDropComponent {
-
-  toBigFiles = signal<string[]>([])
+  sizeErrorMessage = signal<string[]>([]);
 
   uploading = signal(false);
 
-  images = model<HTMLImageElement[]>([]);
+  preview = model<any[]>([]);
+
+  images = model<File[]>([]);
 
   onDrop(event: DragEvent): void {
     event.preventDefault();
@@ -32,35 +33,35 @@ export class DragAndDropComponent {
     this.uploading.set(true);
   }
 
-  private uploadFiles(img: FileList) {
-    for (let i = 0; i < img.length; i++) {
-      const file = img[i];
+  private uploadFiles(files: FileList): void {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       if (file.size > 204800) {
-        this.toBigFiles.update(x => x.concat(file.name));
+        this.sizeErrorMessage.update((x) => x.concat(file.name));
 
         const timer = setTimeout(() => {
-          this.toBigFiles.set([]);
+          this.sizeErrorMessage.set([]);
           clearTimeout(timer);
         }, 6000);
-        
+
         continue;
-      };
+      }
+      this.images().push(files[i]);
+
       let reader = new FileReader();
-      reader.addEventListener('load', (img) => {
-        let image = new Image();
-        image.title = file?.name;
-        image.src = img.target?.result as string;
-        this.images.set(this.images().concat(image));
-      });
 
       reader.readAsDataURL(file);
+
+      reader.addEventListener('load', (img) => {
+        this.preview().push({ img: img.target?.result });
+      });
     }
+    console.log(this.preview());
     this.uploading.set(false);
   }
 
-  removeImage(index: number) {    
+  removeImage(index: number): void {
     this.images().splice(index, 1);
-    this.images.set([...this.images()]);
+    this.preview().splice(index, 1);
   }
-
 }

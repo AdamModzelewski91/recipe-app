@@ -1,58 +1,60 @@
-import { Injectable, signal } from '@angular/core';
-import { GlobalRecipes } from '../models/recipe.type';
+import { Injectable } from '@angular/core';
+import {
+  GetPhotos,
+  GlobalRecipes,
+  RecipeVotes,
+  ResponseGlobalRecipes,
+} from '../models/recipe.type';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+const APIUrl = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalRecipesService {
-  globalRecipes = signal<GlobalRecipes[]>([
-    {
-      userId: 'fgdfgdfgert',
-      id: '13sda22wdqwd32',
-      name: 'Apple pie 1',
-      dish: 'cake',
-      difficult: 'moderate',
-      prepTime: '20',
-      cookTime: '180',
-      serves: '12',
-      nutritions: {
-        calories: '300',
-        fat: '25',
-        carbohydrate: '18',
-        protein: '6',
+  constructor(private http: HttpClient) {}
+
+  voteRecipe(
+    id: string,
+    action: string,
+    personId: string,
+  ): Observable<{ votes: RecipeVotes }> {
+    return this.http.patch<{ votes: RecipeVotes }>(
+      APIUrl + '/global-recipes/' + id,
+      {
+        action,
+        personId,
       },
-      photos: [],
-      votes: {
-        likes: 12,
-        dislikes: 4,
-        liked: false,
-        disliked: false,
-      },
-      published: true,
-    },
-  ]);
-
-  likeRecipe(index: number): void {
-    if (this.globalRecipes()[index].votes.liked) return;
-
-    if (this.globalRecipes()[index].votes.disliked) {
-      this.globalRecipes()[index].votes.dislikes--;
-    }
-
-    this.globalRecipes()[index].votes.likes++;
-    this.globalRecipes()[index].votes.liked = true;
-    this.globalRecipes()[index].votes.disliked = false;
+    );
   }
 
-  dislikeRecipe(index: number): void {
-    if (this.globalRecipes()[index].votes.disliked) return;
+  getGlobalList(): Observable<GlobalRecipes[]> {
+    return this.http
+      .get<ResponseGlobalRecipes[]>(APIUrl + '/global-recipes')
+      .pipe(
+        map((recipes) =>
+          recipes.map((x) => ({
+            id: x._id,
+            name: x.name,
+            dish: x.dish,
+            difficult: x.difficult,
+            prepTime: x.prepTime,
+            cookTime: x.cookTime,
+            serves: x.serves,
+            nutritions: x.nutritions,
+            photosAlbumId: x?.photosAlbumId,
+            photos: [],
+            published: x.published,
+            votes: x.votes,
+          })),
+        ),
+      );
+  }
 
-    if (this.globalRecipes()[index].votes.liked) {
-      this.globalRecipes()[index].votes.likes--;
-    }
-
-    this.globalRecipes()[index].votes.dislikes++;
-    this.globalRecipes()[index].votes.liked = false;
-    this.globalRecipes()[index].votes.disliked = true;
+  getPhotos(id: string): Observable<GetPhotos[]> {
+    return this.http.get<GetPhotos[]>(APIUrl + '/photos/' + id);
   }
 }

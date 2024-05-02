@@ -1,6 +1,6 @@
 <mat-accordion>
   @for (recipe of recipesList(); track $index) {
-  <mat-expansion-panel>
+  <mat-expansion-panel (opened)="isExpanded($index, recipe.photosAlbumId)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ recipe.name }}
@@ -36,9 +36,13 @@
         }
       </div>
     </mat-card>
+    @if (recipe.photos.length > 0) {
     <p>Photos:</p>
-    @for (item of recipe.photos; track $index) {
-    <img [src]="item.src" [style]="'height: 200px'" [title]="item.title" />
+    <div class="photos">
+      @for (photo of recipe.photos; track $index) {
+      <img [src]="photo.img" [title]="photo.name" />
+      }
+    </div>
     }
   </mat-expansion-panel>
   }

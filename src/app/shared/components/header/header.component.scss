@@ -1,7 +1,8 @@
 .wrapper {
+  width: 100%;
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  
   .auth {
     display: flex;
     gap: 10px;
@@ -11,4 +12,17 @@
   .active {
     background-color: red;
   }
+}
+
+mat-toolbar {
+  margin-bottom: 20px;
+}
+
+li {
+  list-style: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
 }

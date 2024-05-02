@@ -1,11 +1,15 @@
-import { Component, computed } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import { GlobalRecipes } from '../models/recipe.type';
 import { GlobalRecipesService } from '../services/global-recipes.service';
-import { RecipesTableComponent } from '../components/recipes-table/recipes-table.component';
+import {
+  CurrentPhotoExtended,
+  RecipesTableComponent,
+} from '../components/recipes-table/recipes-table.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -16,26 +20,47 @@ import { NgClass } from '@angular/common';
     MatButtonModule,
     MatIconModule,
     NgClass,
+    JsonPipe,
   ],
   templateUrl: './global-recipe-list.component.html',
   styleUrl: './global-recipe-list.component.scss',
 })
 export class GlobalRecipeListComponent {
-  globalRecipes = computed<GlobalRecipes[]>(() =>
-    this.globalRecipesService.globalRecipes(),
+  personId = signal('asdasdasd');
+
+  globalRecipes: Signal<GlobalRecipes[]> = toSignal(
+    this.globalRecipesService.getGlobalList(),
+    {
+      initialValue: [],
+    },
   );
 
   constructor(private globalRecipesService: GlobalRecipesService) {}
 
-  onLike(e: Event, index: number) {
+  onVote(e: Event, index: number, vote: string) {
     e.stopPropagation();
 
-    this.globalRecipesService.likeRecipe(index);
+    this.globalRecipesService
+      .voteRecipe(this.globalRecipes()[index].id, vote, this.personId())
+      .subscribe((x) => {
+        this.globalRecipes()[index].votes = x.votes;
+      });
   }
 
-  onDislike(e: Event, index: number) {
-    e.stopPropagation();
+  getPhotos(current: CurrentPhotoExtended) {
+    if (this.globalRecipes()[current.index].photos.length > 0) return;
+    this.globalRecipesService
+      .getPhotos(current.photosAlbumId)
+      .subscribe(async (photos) => {
+        for (let photo of photos) {
+          const obj = {
+            name: photo.originalname,
+            img: `data:${photo.mimetype};base64,` + photo.buffer,
+            id: photo.id,
+          };
 
-    this.globalRecipesService.dislikeRecipe(index);
+          this.globalRecipes()[current.index].photos.push(obj);
+        }
+      });
   }
 }

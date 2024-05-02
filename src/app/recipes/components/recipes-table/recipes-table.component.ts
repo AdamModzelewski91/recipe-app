@@ -1,6 +1,8 @@
 import {
   Component,
   ContentChild,
+  EventEmitter,
+  Output,
   TemplateRef,
   input,
   signal,
@@ -14,6 +16,11 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { RouterModule } from '@angular/router';
+
+export type CurrentPhotoExtended = {
+  index: number;
+  photosAlbumId: string;
+};
 
 @Component({
   selector: 'app-recipes-table',
@@ -32,9 +39,15 @@ import { RouterModule } from '@angular/router';
   styleUrl: './recipes-table.component.scss',
 })
 export class RecipesTableComponent {
+  @Output() onExpend = new EventEmitter<CurrentPhotoExtended>();
+
   nutritions = signal(nutritions);
 
   @ContentChild(TemplateRef) itemTemplate!: TemplateRef<any>;
 
   recipesList = input.required<GlobalRecipes[] | MyRecipes[]>();
+
+  isExpanded(index: number, photosAlbumId: string) {
+    this.onExpend.emit({ index, photosAlbumId });
+  }
 }

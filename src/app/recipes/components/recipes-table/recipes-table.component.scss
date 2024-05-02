@@ -47,3 +47,14 @@
     }
   }
 }
+
+.photos {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+
+  img {
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+}
