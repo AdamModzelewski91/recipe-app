@@ -41,10 +41,14 @@ export class MyRecipeListComponent {
     this.myRecipesService.deleteRecipe(index);
   }
 
-  getPhotos(event: CurrentPhotoExtended) {
-    if (this.myList()[event.index].photos.length > 0) return;
+  getPhotos(current: CurrentPhotoExtended) {
+    if (
+      this.myList()[current.index].photos.length > 0 ||
+      !current.photosAlbumId
+    )
+      return;
     this.myRecipesService
-      .getPhotos(event.photosAlbumId)
+      .getPhotos(current.photosAlbumId)
       .subscribe(async (photos) => {
         for (let photo of photos) {
           const obj = {
@@ -53,7 +57,7 @@ export class MyRecipeListComponent {
             id: photo.id,
           };
 
-          this.myList()[event.index].photos.push(obj);
+          this.myList()[current.index].photos.push(obj);
         }
       });
   }
