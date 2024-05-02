@@ -45,7 +45,7 @@ export class MyRecipesService {
     const postData = new FormData();
     this.appendFormData(postData, recipe);
     postData.append('removedPhotos', recipe.removedPhotos || '');
-    postData.append('photosId', recipe.photosAlbumId);
+    postData.append('photosAlbumId', recipe.photosAlbumId);
 
     this.http
       .put<MyRecipes>(APIUrl + '/my-recipes/' + recipe.id, postData)

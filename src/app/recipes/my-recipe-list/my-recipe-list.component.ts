@@ -42,11 +42,7 @@ export class MyRecipeListComponent {
   }
 
   getPhotos(current: CurrentPhotoExtended) {
-    if (
-      this.myList()[current.index].photos.length > 0 ||
-      !current.photosAlbumId
-    )
-      return;
+    if (this.myList()[current.index].photos.length > 0) return;
     this.myRecipesService
       .getPhotos(current.photosAlbumId)
       .subscribe(async (photos) => {

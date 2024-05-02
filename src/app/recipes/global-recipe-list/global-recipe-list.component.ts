@@ -48,11 +48,7 @@ export class GlobalRecipeListComponent {
   }
 
   getPhotos(current: CurrentPhotoExtended) {
-    if (
-      this.globalRecipes()[current.index].photos.length > 0 ||
-      !current.photosAlbumId
-    )
-      return;
+    if (this.globalRecipes()[current.index].photos.length > 0) return;
     this.globalRecipesService
       .getPhotos(current.photosAlbumId)
       .subscribe(async (photos) => {
