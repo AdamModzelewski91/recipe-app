@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JsonPipe, NgClass } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PhotosService } from '../services/photos.service';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -35,7 +36,10 @@ export class GlobalRecipeListComponent {
     },
   );
 
-  constructor(private globalRecipesService: GlobalRecipesService) {}
+  constructor(
+    private globalRecipesService: GlobalRecipesService,
+    private photoService: PhotosService,
+  ) {}
 
   onVote(e: Event, index: number, vote: string) {
     e.stopPropagation();
@@ -49,18 +53,8 @@ export class GlobalRecipeListComponent {
 
   getPhotos(current: CurrentPhotoExtended) {
     if (this.globalRecipes()[current.index].photos.length > 0) return;
-    this.globalRecipesService
-      .getPhotos(current.photosAlbumId)
-      .subscribe(async (photos) => {
-        for (let photo of photos) {
-          const obj = {
-            name: photo.originalname,
-            img: `data:${photo.mimetype};base64,` + photo.buffer,
-            id: photo.id,
-          };
-
-          this.globalRecipes()[current.index].photos.push(obj);
-        }
-      });
+    this.photoService.getPhotos(current.photosAlbumId).subscribe((photos) => {
+      this.globalRecipes()[current.index].photos = photos;
+    });
   }
 }

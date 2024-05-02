@@ -33,6 +33,13 @@ export interface UpdateRecipe extends Recipe {
   photosAlbumId: string;
 }
 
+export interface ResponseUpdateRecipe extends Recipe {
+  id: string;
+  photos: GetPhotos[];
+  photosAlbumId: string;
+  published: boolean;
+}
+
 export type GetPhotos = {
   originalname: string;
   mimetype: string;

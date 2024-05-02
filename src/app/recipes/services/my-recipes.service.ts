@@ -3,7 +3,9 @@ import {
   AddRecipe,
   GetPhotos,
   MyRecipes,
+  Photos,
   ResponseMyRecipes,
+  ResponseUpdateRecipe,
   UpdateRecipe,
 } from '../models/recipe.type';
 import { HttpClient } from '@angular/common/http';
@@ -37,21 +39,29 @@ export class MyRecipesService {
       });
   }
 
-  getPhotos(id: string): Observable<GetPhotos[]> {
-    return this.http.get<GetPhotos[]>(APIUrl + '/photos/' + id);
-  }
-
   updateRecipe(recipe: UpdateRecipe): void {
     const postData = new FormData();
     this.appendFormData(postData, recipe);
     postData.append('removedPhotos', recipe.removedPhotos || '');
+    console.log(recipe);
     postData.append('photosAlbumId', recipe.photosAlbumId);
 
     this.http
-      .put<MyRecipes>(APIUrl + '/my-recipes/' + recipe.id, postData)
+      .put<ResponseUpdateRecipe>(APIUrl + '/my-recipes/' + recipe.id, postData)
       .subscribe((res) => {
         const index = this.myRecipes().findIndex((x) => x.id === res.id);
-        this.myRecipes().splice(index, 1, res);
+        const imgs: Photos[] = [];
+        for (let photo of res.photos) {
+          const obj = {
+            name: photo.originalname,
+            img: `data:${photo.mimetype};base64,` + photo.buffer,
+            id: photo.id,
+          };
+
+          imgs.push(obj);
+        }
+
+        this.myRecipes().splice(index, 1, { ...res, photos: imgs });
       });
   }
 

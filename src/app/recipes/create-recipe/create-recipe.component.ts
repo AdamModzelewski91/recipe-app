@@ -16,6 +16,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NutritionsTableComponent } from '../components/nutritions-table/nutritions-table.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Photos } from '../models/recipe.type';
+import { PhotosService } from '../services/photos.service';
 
 @Component({
   selector: 'app-create-recipe',
@@ -43,7 +44,7 @@ export class CreateRecipeComponent {
 
   idRecipe!: string;
 
-  photosId!: string;
+  photosAlbumId!: string;
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -128,6 +129,7 @@ export class CreateRecipeComponent {
     private router: Router,
     private myRecipesService: MyRecipesService,
     private activatedRoute: ActivatedRoute,
+    private photosService: PhotosService,
   ) {}
 
   ngOnInit() {
@@ -143,10 +145,14 @@ export class CreateRecipeComponent {
   private editRecipe(id: string): void {
     this.idRecipe = id;
     const recipe = this.myRecipesService.getRecipe(id);
+    this.photosAlbumId = recipe.photosAlbumId;
 
     if (recipe.photos && recipe.photos?.length > 0) {
-      this.photosId = recipe.photosAlbumId;
       this.currentPhotos.set([...recipe.photos]);
+    } else if (recipe.photos?.length === 0) {
+      this.photosService.getPhotos(this.photosAlbumId).subscribe((photos) => {
+        this.currentPhotos.set(photos);
+      });
     }
 
     this.form.reset(recipe);
@@ -176,7 +182,7 @@ export class CreateRecipeComponent {
         ...this.form.value,
         removedPhotos: this.getRemovedPhotos(),
         photos: this.uploadedImages(),
-        photosAlbumId: this.photosId,
+        photosAlbumId: this.photosAlbumId,
       });
     } else {
       this.myRecipesService.addRecipe({

@@ -9,6 +9,7 @@ import { MyRecipes } from '../models/recipe.type';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { PhotosService } from '../services/photos.service';
 
 @Component({
   selector: 'app-my-recipe-list',
@@ -27,7 +28,10 @@ import { MatIconModule } from '@angular/material/icon';
 export class MyRecipeListComponent {
   myList = computed<MyRecipes[]>(() => this.myRecipesService.myRecipes());
 
-  constructor(private myRecipesService: MyRecipesService) {}
+  constructor(
+    private myRecipesService: MyRecipesService,
+    private photosService: PhotosService,
+  ) {}
 
   onPublish(e: Event, index: number): void {
     e.stopPropagation();
@@ -43,18 +47,8 @@ export class MyRecipeListComponent {
 
   getPhotos(current: CurrentPhotoExtended) {
     if (this.myList()[current.index].photos.length > 0) return;
-    this.myRecipesService
-      .getPhotos(current.photosAlbumId)
-      .subscribe(async (photos) => {
-        for (let photo of photos) {
-          const obj = {
-            name: photo.originalname,
-            img: `data:${photo.mimetype};base64,` + photo.buffer,
-            id: photo.id,
-          };
-
-          this.myList()[current.index].photos.push(obj);
-        }
-      });
+    this.photosService.getPhotos(current.photosAlbumId).subscribe((photos) => {
+      this.myList()[current.index].photos = photos;
+    });
   }
 }
