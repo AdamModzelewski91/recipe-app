@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, DestroyRef, computed, inject } from '@angular/core';
 import { MyRecipesService } from '../services/my-recipes.service';
 import { JsonPipe, NgFor } from '@angular/common';
 import {
@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PhotosService } from '../services/photos.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-my-recipe-list',
@@ -27,6 +28,8 @@ import { PhotosService } from '../services/photos.service';
 })
 export class MyRecipeListComponent {
   myList = computed<MyRecipes[]>(() => this.myRecipesService.myRecipes());
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private myRecipesService: MyRecipesService,
@@ -47,8 +50,11 @@ export class MyRecipeListComponent {
 
   getPhotos(current: CurrentPhotoExtended) {
     if (this.myList()[current.index].photos.length > 0) return;
-    this.photosService.getPhotos(current.photosAlbumId).subscribe((photos) => {
-      this.myList()[current.index].photos = photos;
-    });
+    this.photosService
+      .getPhotos(current.photosAlbumId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((photos) => {
+        this.myList()[current.index].photos = photos;
+      });
   }
 }

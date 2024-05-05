@@ -1,4 +1,4 @@
-import { Component, Signal, signal } from '@angular/core';
+import { Component, DestroyRef, Signal, inject, signal } from '@angular/core';
 import { GlobalRecipes } from '../models/recipe.type';
 import { GlobalRecipesService } from '../services/global-recipes.service';
 import {
@@ -9,7 +9,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JsonPipe, NgClass } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { PhotosService } from '../services/photos.service';
 
 @Component({
@@ -36,6 +36,8 @@ export class GlobalRecipeListComponent {
     },
   );
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private globalRecipesService: GlobalRecipesService,
     private photoService: PhotosService,
@@ -46,6 +48,7 @@ export class GlobalRecipeListComponent {
 
     this.globalRecipesService
       .voteRecipe(this.globalRecipes()[index].id, vote, this.personId())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((x) => {
         this.globalRecipes()[index].votes = x.votes;
       });
@@ -53,8 +56,11 @@ export class GlobalRecipeListComponent {
 
   getPhotos(current: CurrentPhotoExtended) {
     if (this.globalRecipes()[current.index].photos.length > 0) return;
-    this.photoService.getPhotos(current.photosAlbumId).subscribe((photos) => {
-      this.globalRecipes()[current.index].photos = photos;
-    });
+    this.photoService
+      .getPhotos(current.photosAlbumId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((photos) => {
+        this.globalRecipes()[current.index].photos = photos;
+      });
   }
 }

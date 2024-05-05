@@ -1,7 +1,6 @@
-import { Injectable, Signal } from '@angular/core';
+import { DestroyRef, Injectable, Signal, inject } from '@angular/core';
 import {
   AddRecipe,
-  GetPhotos,
   MyRecipes,
   Photos,
   ResponseMyRecipes,
@@ -10,7 +9,7 @@ import {
 } from '../models/recipe.type';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
 
 const APIUrl = environment.apiUrl;
@@ -23,6 +22,8 @@ export class MyRecipesService {
     initialValue: [],
   });
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(private http: HttpClient) {}
 
   addRecipe(recipe: AddRecipe): void {
@@ -31,6 +32,7 @@ export class MyRecipesService {
 
     this.http
       .post<MyRecipes>(APIUrl + '/my-recipes', postData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.myRecipes().push({
           ...recipe,
@@ -43,14 +45,14 @@ export class MyRecipesService {
     const postData = new FormData();
     this.appendFormData(postData, recipe);
     postData.append('removedPhotos', recipe.removedPhotos || '');
-    console.log(recipe);
     postData.append('photosAlbumId', recipe.photosAlbumId);
 
     this.http
       .put<ResponseUpdateRecipe>(APIUrl + '/my-recipes/' + recipe.id, postData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
-        const index = this.myRecipes().findIndex((x) => x.id === res.id);
         const imgs: Photos[] = [];
+
         for (let photo of res.photos) {
           const obj = {
             name: photo.originalname,
@@ -61,6 +63,7 @@ export class MyRecipesService {
           imgs.push(obj);
         }
 
+        const index = this.myRecipes().findIndex((x) => x.id === res.id);
         this.myRecipes().splice(index, 1, { ...res, photos: imgs });
       });
   }
@@ -112,6 +115,7 @@ export class MyRecipesService {
       .patch<{ published: boolean }>(APIUrl + '/my-recipes/' + recipe.id, {
         published: !recipe.published,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.myRecipes()[index].published = res.published;
       });
@@ -120,8 +124,11 @@ export class MyRecipesService {
   deleteRecipe(index: number): void {
     const recipe = this.myRecipes()[index];
 
-    this.http.delete(APIUrl + '/my-recipes/' + recipe.id).subscribe(() => {
-      this.myRecipes().splice(index, 1);
-    });
+    this.http
+      .delete(APIUrl + '/my-recipes/' + recipe.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.myRecipes().splice(index, 1);
+      });
   }
 }
