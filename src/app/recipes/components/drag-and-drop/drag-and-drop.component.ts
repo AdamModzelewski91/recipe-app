@@ -56,7 +56,7 @@ export class DragAndDropComponent {
         this.preview().push({ img: img.target?.result });
       });
     }
-    console.log(this.preview());
+
     this.uploading.set(false);
   }
 

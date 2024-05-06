@@ -5,9 +5,10 @@ import {
   RecipeVotes,
   ResponseGlobalRecipes,
 } from '../models/recipe.type';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { Observable, delay, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
 
 const APIUrl = environment.apiUrl;
 
@@ -28,6 +29,7 @@ export class GlobalRecipesService {
         action,
         personId,
       },
+      { context: new HttpContext().set(SkipLoading, true) },
     );
   }
 
@@ -35,6 +37,7 @@ export class GlobalRecipesService {
     return this.http
       .get<ResponseGlobalRecipes[]>(APIUrl + '/global-recipes')
       .pipe(
+        delay(200),
         map((recipes) =>
           recipes.map((x) => ({
             id: x._id,

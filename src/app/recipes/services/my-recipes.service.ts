@@ -7,10 +7,11 @@ import {
   ResponseUpdateRecipe,
   UpdateRecipe,
 } from '../models/recipe.type';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
+import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
 
 const APIUrl = environment.apiUrl;
 
@@ -37,6 +38,7 @@ export class MyRecipesService {
         this.myRecipes().push({
           ...recipe,
           ...res,
+          photos: [],
         });
       });
   }
@@ -112,9 +114,13 @@ export class MyRecipesService {
     const recipe = this.myRecipes()[index];
 
     this.http
-      .patch<{ published: boolean }>(APIUrl + '/my-recipes/' + recipe.id, {
-        published: !recipe.published,
-      })
+      .patch<{ published: boolean }>(
+        APIUrl + '/my-recipes/' + recipe.id,
+        {
+          published: !recipe.published,
+        },
+        { context: new HttpContext().set(SkipLoading, true) },
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.myRecipes()[index].published = res.published;

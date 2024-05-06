@@ -7,7 +7,10 @@ import { SignupComponent } from './shared/components/signup/signup.component';
 
 export const routes: Routes = [
   { path: 'my-recipes', pathMatch: 'full', component: MyRecipeListComponent },
-  { path: 'global-list', component: GlobalRecipeListComponent },
+  {
+    path: 'global-list',
+    component: GlobalRecipeListComponent,
+  },
   { path: 'new-recipe', component: CreateRecipeComponent },
   { path: 'new-recipe/:id', component: CreateRecipeComponent },
   { path: 'login', component: LoginComponent },

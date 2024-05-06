@@ -7,10 +7,12 @@ import {
 } from '../components/recipes-table/recipes-table.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { JsonPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { PhotosService } from '../services/photos.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -20,8 +22,8 @@ import { PhotosService } from '../services/photos.service';
     MatBadgeModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     NgClass,
-    JsonPipe,
   ],
   templateUrl: './global-recipe-list.component.html',
   styleUrl: './global-recipe-list.component.scss',
@@ -43,7 +45,7 @@ export class GlobalRecipeListComponent {
     private photoService: PhotosService,
   ) {}
 
-  onVote(e: Event, index: number, vote: string) {
+  onVote(e: Event, index: number, vote: string): void {
     e.stopPropagation();
 
     this.globalRecipesService
@@ -54,7 +56,7 @@ export class GlobalRecipeListComponent {
       });
   }
 
-  getPhotos(current: CurrentPhotoExtended) {
+  getPhotos(current: CurrentPhotoExtended): void {
     if (this.globalRecipes()[current.index].photos.length > 0) return;
     this.photoService
       .getPhotos(current.photosAlbumId)
