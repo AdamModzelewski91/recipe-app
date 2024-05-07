@@ -8,6 +8,7 @@ import {
 import { MyRecipes } from '../models/recipe.type';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { PhotosService } from '../services/photos.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RecipesTableComponent,
     RouterModule,
     MatButtonModule,
+    MatTooltipModule,
     MatIconModule,
   ],
   templateUrl: './my-recipe-list.component.html',

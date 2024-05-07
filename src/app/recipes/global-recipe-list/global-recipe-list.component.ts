@@ -9,10 +9,10 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgClass } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { PhotosService } from '../services/photos.service';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -22,6 +22,7 @@ import { tap } from 'rxjs';
     MatBadgeModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     MatProgressSpinnerModule,
     NgClass,
   ],

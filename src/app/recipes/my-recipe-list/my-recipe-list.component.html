@@ -1,16 +1,19 @@
 <app-recipes-table [recipesList]="myList()" (onExpend)="getPhotos($event)">
   <ng-template let-index let-recipeId="recipeId">
     <div class="group-btn">
-      <button type="button" mat-raised-button color="warn" (click)="onDelete($event, index)">
-        <mat-icon fontIcon="delete" aria-hidden="false" aria-label="Edit"></mat-icon>
+      <button type="button" mat-raised-button color="warn" (click)="onDelete($event, index)" matTooltip="Delete"
+        matTooltipPosition="above">
+        <mat-icon fontIcon="delete" aria-hidden="false" aria-label="Delete"></mat-icon>
       </button>
       <button type="button" mat-raised-button color="accent" [routerLink]="['/new-recipe/' + recipeId]"
-        (click)="$event.stopPropagation()" [disabled]="myList()[index].published">
+        matTooltip="Edit" matTooltipPosition="above" (click)="$event.stopPropagation()"
+        [disabled]="myList()[index].published">
         <mat-icon fontIcon="edit" aria-hidden="false" aria-label="Edit"></mat-icon>
       </button>
-      <button type="button" mat-raised-button color="primary" (click)="onPublish($event, index)">
+      <button type="button" mat-raised-button color="primary" (click)="onPublish($event, index)" matTooltip="Public"
+        matTooltipPosition="above">
         <mat-icon [fontIcon]="myList()[index].published ? 'public_off' : 'public'" aria-hidden="false"
-          aria-label="Edit"></mat-icon>
+          aria-label="Public"></mat-icon>
       </button>
     </div>
   </ng-template>
