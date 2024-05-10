@@ -1,7 +1,12 @@
 import { JsonPipe } from '@angular/common';
 import { Component, DestroyRef, inject, model } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  FormsModule,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,11 +17,11 @@ import { MatCardModule } from '@angular/material/card';
 import { DragAndDropComponent } from '../components/drag-and-drop/drag-and-drop.component';
 import { forbiddenCharsValidator } from '../../shared/validators/forbidden-chars-validator';
 import { MyRecipesService } from '../services/my-recipes.service';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NutritionsTableComponent } from '../components/nutritions-table/nutritions-table.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Photos } from '../models/recipe.type';
+import { Photos } from '../models/recipe.model';
 import { PhotosService } from '../services/photos.service';
+import { mergeMap, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-create-recipe',
@@ -44,95 +49,87 @@ export class CreateRecipeComponent {
 
   idRecipe!: string;
 
+  photos!: Photos[];
+
   photosAlbumId!: string;
 
-  form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(50),
-      ],
-    }),
-    dish: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    difficult: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    prepTime: new FormControl('', {
-      nonNullable: true,
-      validators: [
+  form = this.nfb.group({
+    name: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+    ],
+    dish: ['', [Validators.required]],
+    difficult: ['', [Validators.required]],
+    prepTime: [
+      '',
+      [
         Validators.required,
         Validators.max(300),
         forbiddenCharsValidator(/[a-zA-Z]/i),
       ],
-    }),
-    cookTime: new FormControl('', {
-      nonNullable: true,
-      validators: [
+    ],
+    cookTime: [
+      '',
+      [
         Validators.required,
         Validators.max(300),
         forbiddenCharsValidator(/[a-zA-Z]/i),
       ],
-    }),
-    serves: new FormControl('', {
-      nonNullable: true,
-      validators: [
+    ],
+    serves: [
+      '',
+      [
         Validators.required,
         Validators.max(24),
         forbiddenCharsValidator(/[a-zA-Z]/i),
       ],
-    }),
-    nutritions: new FormGroup({
-      calories: new FormControl('', {
-        nonNullable: true,
-        validators: [
+    ],
+    nutritions: this.nfb.group({
+      calories: [
+        '',
+        [
           Validators.required,
           Validators.max(9999),
           forbiddenCharsValidator(/[a-zA-Z]/i),
         ],
-      }),
-      fat: new FormControl('', {
-        nonNullable: true,
-        validators: [
+      ],
+      fat: [
+        '',
+        [
           Validators.required,
           Validators.max(1000),
           forbiddenCharsValidator(/[a-zA-Z]/i),
         ],
-      }),
-      carbohydrate: new FormControl('', {
-        nonNullable: true,
-        validators: [
+      ],
+      carbohydrate: [
+        '',
+        [
           Validators.required,
           Validators.max(1000),
           forbiddenCharsValidator(/[a-zA-Z]/i),
         ],
-      }),
-      protein: new FormControl('', {
-        nonNullable: true,
-        validators: [
+      ],
+      protein: [
+        '',
+        [
           Validators.required,
           Validators.max(1000),
           forbiddenCharsValidator(/[a-zA-Z]/i),
         ],
-      }),
+      ],
     }),
   });
 
   private destroyRef = inject(DestroyRef);
 
   constructor(
-    private router: Router,
     private myRecipesService: MyRecipesService,
     private activatedRoute: ActivatedRoute,
     private photosService: PhotosService,
+    private nfb: NonNullableFormBuilder,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
@@ -144,32 +141,30 @@ export class CreateRecipeComponent {
 
   private editRecipe(id: string): void {
     this.idRecipe = id;
-    const recipe = this.myRecipesService.getRecipe(id);
-    this.photosAlbumId = recipe.photosAlbumId;
-
-    if (recipe.photos && recipe.photos?.length > 0) {
-      this.currentPhotos.set([...recipe.photos]);
-    } else if (recipe.photos?.length === 0) {
-      this.photosService.getPhotos(this.photosAlbumId).subscribe((photos) => {
+    this.myRecipesService
+      .getRecipe(id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        mergeMap((recipe) => {
+          this.photosAlbumId = recipe.photosAlbumId;
+          this.form.reset(recipe);
+          return this.photosService.getPhotos(recipe.photosAlbumId);
+        }),
+      )
+      .subscribe((photos) => {
+        this.photos = photos;
         this.currentPhotos.set(photos);
       });
-    }
-
-    this.form.reset(recipe);
   }
 
-  private getRemovedPhotos(): string {
-    const photos: Photos[] = this.myRecipesService.getRecipe(
-      this.idRecipe,
-    )?.photos;
-
+  private getPhotosIdToRemove(): string {
     const photoIds: string[] = [];
     for (let img of this.currentPhotos()) {
       if (img.id) {
         photoIds.push(img.id);
       }
     }
-    const result = photos.filter((item) => !photoIds.includes(item.id));
+    const result = this.photos.filter((item) => !photoIds.includes(item.id));
     return result.map((x) => x.id).join(',');
   }
 
@@ -179,19 +174,17 @@ export class CreateRecipeComponent {
     if (this.idRecipe) {
       this.myRecipesService.updateRecipe({
         id: this.idRecipe,
-        ...this.form.value,
-        removedPhotos: this.getRemovedPhotos(),
+        ...this.form.getRawValue(),
+        removedPhotos: this.getPhotosIdToRemove(),
         photos: this.uploadedImages(),
         photosAlbumId: this.photosAlbumId,
       });
     } else {
       this.myRecipesService.addRecipe({
-        ...this.form.value,
+        ...this.form.getRawValue(),
         photos: this.uploadedImages(),
       });
     }
-
-    this.router.navigate(['/my-recipes']);
   }
 
   onResetForm(): void {

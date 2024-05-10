@@ -3,13 +3,24 @@
     <li>
       <a mat-raised-button routerLink="/global-list" routerLinkActive="active">Global List</a>
     </li>
-    @if (true) {
+    @if (isLogged()) {
     <li>
       <a mat-raised-button routerLink="/my-recipes" routerLinkActive="active">My recipes</a>
     </li>
-    <li style="margin-left: auto;">
+    <li>
       <a mat-raised-button routerLink="/new-recipe" routerLinkActive="active">New Recipes</a>
     </li>
+    <div class="user-info">
+      <p>Hello, <strong>{{nick()}}</strong></p>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="isLogout()">
+          Logout
+        </button>
+      </mat-menu>
+    </div>
     } @else {
     <div class="auth">
       <li>

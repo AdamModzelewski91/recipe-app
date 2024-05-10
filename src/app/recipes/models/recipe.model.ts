@@ -33,13 +33,6 @@ export interface UpdateRecipe extends Recipe {
   photosAlbumId: string;
 }
 
-export interface ResponseUpdateRecipe extends Recipe {
-  id: string;
-  photos: GetPhotos[];
-  photosAlbumId: string;
-  published: boolean;
-}
-
 export type GetPhotos = {
   originalname: string;
   mimetype: string;
@@ -54,18 +47,16 @@ export interface AddRecipe extends Recipe {
 export interface MyRecipes extends NewRecipe {
   id: string;
   published: boolean;
+  createdBy: CreatedBy;
 }
 
-export interface ResponseMyRecipes extends MyRecipes {
-  _id: string;
-}
+export type CreatedBy = {
+  author: string;
+  authorId: string;
+};
 
 export interface GlobalRecipes extends MyRecipes {
   votes: RecipeVotes;
-}
-
-export interface ResponseGlobalRecipes extends GlobalRecipes {
-  _id: string;
 }
 
 export interface RecipeVotes {

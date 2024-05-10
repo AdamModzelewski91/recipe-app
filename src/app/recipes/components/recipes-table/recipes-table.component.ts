@@ -7,19 +7,20 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { GlobalRecipes, MyRecipes } from '../../models/recipe.type';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
-
-import { nutritions } from '../nutritions-table/nutritions-table.component';
-import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
-import { RouterModule } from '@angular/router';
+
+import { GlobalRecipes, MyRecipes } from '../../models/recipe.model';
+import { nutritions } from '../nutritions-table/nutritions-table.component';
 import { LoadingBarComponent } from '../../../shared/components/loading-bar/loading-bar.component';
 
-export type CurrentPhotoExtended = {
+export type CurrentRecipeExtended = {
   index: number;
   photosAlbumId: string;
 };
@@ -42,7 +43,7 @@ export type CurrentPhotoExtended = {
   styleUrl: './recipes-table.component.scss',
 })
 export class RecipesTableComponent {
-  @Output() onExpend = new EventEmitter<CurrentPhotoExtended>();
+  @Output() onExpend = new EventEmitter<CurrentRecipeExtended>();
 
   nutritions = signal(nutritions);
 

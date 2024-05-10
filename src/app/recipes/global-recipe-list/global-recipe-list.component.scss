@@ -1,5 +1,9 @@
 @import 'global';
 
+:host {
+  justify-content: space-between;
+}
+
 .group-btn {
   display: flex;
   gap: 5px;

@@ -7,7 +7,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { Nutritions } from '../../models/recipe.type';
+import { Nutritions } from '../../models/recipe.model';
 
 export const nutritions: { name: keyof Nutritions; unit: string }[] = [
   { name: 'calories', unit: 'kJ/kcal' },

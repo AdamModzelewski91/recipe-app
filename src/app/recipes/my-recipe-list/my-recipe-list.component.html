@@ -1,5 +1,7 @@
 <app-recipes-table [recipesList]="myList()" (onExpend)="getPhotos($event)">
   <ng-template let-index let-recipeId="recipeId">
+    <!-- empty div for space between -->
+    <div></div>
     <div class="group-btn">
       <button type="button" mat-raised-button color="warn" (click)="onDelete($event, index)" matTooltip="Delete"
         matTooltipPosition="above">
@@ -10,8 +12,8 @@
         [disabled]="myList()[index].published">
         <mat-icon fontIcon="edit" aria-hidden="false" aria-label="Edit"></mat-icon>
       </button>
-      <button type="button" mat-raised-button color="primary" (click)="onPublish($event, index)" matTooltip="Public"
-        matTooltipPosition="above">
+      <button type="button" mat-raised-button color="primary" (click)="onPublish($event, index)"
+        [matTooltip]="myList()[index].published ? 'Unpublish' : 'Publish'" matTooltipPosition="above">
         <mat-icon [fontIcon]="myList()[index].published ? 'public_off' : 'public'" aria-hidden="false"
           aria-label="Public"></mat-icon>
       </button>

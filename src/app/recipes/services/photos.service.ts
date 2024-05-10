@@ -1,7 +1,7 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { GetPhotos, Photos } from '../models/recipe.type';
+import { GetPhotos, Photos } from '../models/recipe.model';
 import { environment } from '../../../environments/environment';
 import {
   LoadingBar,

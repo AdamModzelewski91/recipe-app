@@ -1,17 +1,17 @@
-import { DestroyRef, Injectable, Signal, inject } from '@angular/core';
+import { DestroyRef, Injectable, inject } from '@angular/core';
+import { AddRecipe, MyRecipes, UpdateRecipe } from '../models/recipe.model';
 import {
-  AddRecipe,
-  MyRecipes,
-  Photos,
   ResponseMyRecipes,
   ResponseUpdateRecipe,
-  UpdateRecipe,
-} from '../models/recipe.type';
+} from '../models/response-recipe.model';
+
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
+import { AuthService } from '../../shared/services/auth.service';
+import { Router } from '@angular/router';
 
 const APIUrl = environment.apiUrl;
 
@@ -19,27 +19,25 @@ const APIUrl = environment.apiUrl;
   providedIn: 'root',
 })
 export class MyRecipesService {
-  myRecipes: Signal<MyRecipes[]> = toSignal(this.getRecipes(), {
-    initialValue: [],
-  });
-
   private destroyRef = inject(DestroyRef);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService,
+    private router: Router,
+  ) {}
 
   addRecipe(recipe: AddRecipe): void {
     const postData = new FormData();
     this.appendFormData(postData, recipe);
+    postData.append('author', this.auth.nick());
+    postData.append('authorId', this.auth.userId());
 
     this.http
       .post<MyRecipes>(APIUrl + '/my-recipes', postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => {
-        this.myRecipes().push({
-          ...recipe,
-          ...res,
-          photos: [],
-        });
+      .subscribe(() => {
+        this.router.navigate(['/my-recipes']);
       });
   }
 
@@ -52,22 +50,7 @@ export class MyRecipesService {
     this.http
       .put<ResponseUpdateRecipe>(APIUrl + '/my-recipes/' + recipe.id, postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => {
-        const imgs: Photos[] = [];
-
-        for (let photo of res.photos) {
-          const obj = {
-            name: photo.originalname,
-            img: `data:${photo.mimetype};base64,` + photo.buffer,
-            id: photo.id,
-          };
-
-          imgs.push(obj);
-        }
-
-        const index = this.myRecipes().findIndex((x) => x.id === res.id);
-        this.myRecipes().splice(index, 1, { ...res, photos: imgs });
-      });
+      .subscribe();
   }
 
   private appendFormData(postData: FormData, recipe: AddRecipe): void {
@@ -86,55 +69,46 @@ export class MyRecipesService {
     }
   }
 
-  getRecipe(id: string): MyRecipes {
-    return this.myRecipes().find((x) => x.id === id) as MyRecipes;
+  getRecipe(id: string): Observable<MyRecipes> {
+    return this.http.get<MyRecipes>(APIUrl + '/my-recipes?id=' + id);
   }
 
   getRecipes(): Observable<MyRecipes[]> {
-    return this.http.get<ResponseMyRecipes[]>(APIUrl + '/my-recipes').pipe(
-      map((list) =>
-        list.map((x) => ({
-          id: x._id,
-          name: x.name,
-          dish: x.dish,
-          difficult: x.difficult,
-          prepTime: x.prepTime,
-          cookTime: x.cookTime,
-          serves: x.serves,
-          nutritions: x.nutritions,
-          photosAlbumId: x.photosAlbumId,
-          photos: [],
-          published: x.published,
-        })),
-      ),
+    return this.http
+      .get<
+        ResponseMyRecipes[]
+      >(APIUrl + '/my-recipes?authorId=' + this.auth.userId())
+      .pipe(
+        map((list) =>
+          list.map((x) => ({
+            id: x._id,
+            name: x.name,
+            dish: x.dish,
+            difficult: x.difficult,
+            prepTime: x.prepTime,
+            cookTime: x.cookTime,
+            serves: x.serves,
+            nutritions: x.nutritions,
+            createdBy: x.createdBy,
+            photosAlbumId: x.photosAlbumId,
+            photos: [],
+            published: x.published,
+          })),
+        ),
+      );
+  }
+
+  publishRecipe(recipe: MyRecipes): Observable<{ published: boolean }> {
+    return this.http.patch<{ published: boolean }>(
+      APIUrl + '/my-recipes/' + recipe.id,
+      {
+        published: !recipe.published,
+      },
+      { context: new HttpContext().set(SkipLoading, true) },
     );
   }
 
-  publishRecipe(index: number): void {
-    const recipe = this.myRecipes()[index];
-
-    this.http
-      .patch<{ published: boolean }>(
-        APIUrl + '/my-recipes/' + recipe.id,
-        {
-          published: !recipe.published,
-        },
-        { context: new HttpContext().set(SkipLoading, true) },
-      )
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => {
-        this.myRecipes()[index].published = res.published;
-      });
-  }
-
-  deleteRecipe(index: number): void {
-    const recipe = this.myRecipes()[index];
-
-    this.http
-      .delete(APIUrl + '/my-recipes/' + recipe.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.myRecipes().splice(index, 1);
-      });
+  deleteRecipe(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(APIUrl + '/my-recipes/' + id);
   }
 }

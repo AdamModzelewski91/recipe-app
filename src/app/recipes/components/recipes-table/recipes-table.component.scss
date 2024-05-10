@@ -9,14 +9,9 @@
   font-size: 20px;
 }
 
-.mat-expansion-panel-header{
-  height: auto;
-  padding: 10px 24px 10px 24px;
-}
-
 .mat-expansion-panel-header-description {
   flex-grow: 1;
-  justify-content: right;
+  justify-content: space-between;
 }
 
 .nutrition {

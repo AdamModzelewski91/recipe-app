@@ -16,7 +16,7 @@
         <option value="snack">Snack</option>
         <option value="sandwich">Sandwich</option>
       </select>
-      @if (form.get('prepTime').getError('required')) {
+      @if (form.controls.dish.getError('required')) {
       <mat-error>Choose your dish!</mat-error>
       }
     </mat-form-field>
@@ -27,46 +27,46 @@
         <option value="moderate">Moderate</option>
         <option value="hard">Hard</option>
       </select>
-      @if (form.get('prepTime').getError('required')) {
+      @if (form.controls.difficult.getError('required')) {
       <mat-error>Choose difficulty!</mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Prep time:</mat-label>
       <input type="text" matInput placeholder="min" formControlName="prepTime">
-      @if (form.get('prepTime').getError('required')) {
+      @if (form.controls.prepTime.getError('required')) {
       <mat-error>Calories required!</mat-error>
       }
-      @if (form.get('prepTime').getError('max')) {
+      @if (form.controls.prepTime.getError('max')) {
       <mat-error>Max value reached!</mat-error>
       }
-      @if (form.get('prepTime').getError('forbiddenName')) {
+      @if (form.controls.prepTime.getError('forbiddenName')) {
       <mat-error>Only numbers!</mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Cook time:</mat-label>
       <input type="text" matInput placeholder="min" formControlName="cookTime">
-      @if (form.get('cookTime').getError('required')) {
+      @if (form.controls.cookTime.getError('required')) {
       <mat-error>Cook time required!</mat-error>
       }
-      @if (form.get('cookTime').getError('max')) {
+      @if (form.controls.cookTime.getError('max')) {
       <mat-error>Max value reached!</mat-error>
       }
-      @if (form.get('cookTime').getError('forbiddenName')) {
+      @if (form.controls.cookTime.getError('forbiddenName')) {
       <mat-error>Only numbers!</mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Serves:</mat-label>
       <input type="text" matInput formControlName="serves">
-      @if (form.get('serves').getError('required')) {
+      @if (form.controls.serves.getError('required')) {
       <mat-error>Serves amount required!</mat-error>
       }
-      @if (form.get('serves').getError('max')) {
+      @if (form.controls.serves.getError('max')) {
       <mat-error>Max value reached!</mat-error>
       }
-      @if (form.get('serves').getError('forbiddenName')) {
+      @if (form.controls.serves.getError('forbiddenName')) {
       <mat-error>Only numbers!</mat-error>
       }
     </mat-form-field>

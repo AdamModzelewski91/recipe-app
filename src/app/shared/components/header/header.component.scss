@@ -2,6 +2,7 @@
   width: 100%;
   display: flex;
   gap: 10px;
+  align-items: center;
   
   .auth {
     display: flex;
@@ -25,4 +26,16 @@ li {
 ul {
   margin: 0;
   padding: 0;
+}
+
+.user-info {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+
+  p {
+    margin: 0;
+    align-self: center;
+    font-weight: 200;
+  }
 }

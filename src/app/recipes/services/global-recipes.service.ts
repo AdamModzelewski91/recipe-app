@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  GetPhotos,
-  GlobalRecipes,
-  RecipeVotes,
-  ResponseGlobalRecipes,
-} from '../models/recipe.type';
+import { GetPhotos, GlobalRecipes, RecipeVotes } from '../models/recipe.model';
+import { ResponseGlobalRecipes } from '../models/response-recipe.model';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, delay, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -47,6 +43,7 @@ export class GlobalRecipesService {
             prepTime: x.prepTime,
             cookTime: x.cookTime,
             serves: x.serves,
+            createdBy: x.createdBy,
             nutritions: x.nutritions,
             photosAlbumId: x?.photosAlbumId,
             photos: [],
