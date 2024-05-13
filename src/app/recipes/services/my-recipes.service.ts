@@ -1,18 +1,16 @@
 import { DestroyRef, Injectable, inject, signal } from '@angular/core';
-import { AddRecipe, MyRecipes, UpdateRecipe } from '../models/recipe.model';
-import {
-  ResponseMyRecipes,
-  ResponseUpdateRecipe,
-} from '../models/response-recipe.model';
-
+import { Router } from '@angular/router';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { PageEvent } from '@angular/material/paginator';
+
+import { AddRecipe, MyRecipes, UpdateRecipe } from '../models/recipe.model';
+import { ResponseMyRecipes } from '../models/response-recipe.model';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
 import { AuthService } from '../../shared/services/auth.service';
-import { Router } from '@angular/router';
-import { PageEvent } from '@angular/material/paginator';
 
 const APIUrl = environment.apiUrl;
 
@@ -38,11 +36,9 @@ export class MyRecipesService {
   addRecipe(recipe: AddRecipe): void {
     const postData = new FormData();
     this.appendFormData(postData, recipe);
-    postData.append('author', this.auth.nick());
-    postData.append('authorId', this.auth.userId());
 
     this.http
-      .post<MyRecipes>(APIUrl + '/my-recipes', postData)
+      .post(APIUrl + '/my-recipes', postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.router.navigate(['/my-recipes']);
@@ -56,9 +52,11 @@ export class MyRecipesService {
     postData.append('photosAlbumId', recipe.photosAlbumId);
 
     this.http
-      .put<ResponseUpdateRecipe>(APIUrl + '/my-recipes/' + recipe.id, postData)
+      .put(APIUrl + '/my-recipes/' + recipe.id, postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+      .subscribe(() => {
+        this.router.navigate(['/my-recipes']);
+      });
   }
 
   private appendFormData(postData: FormData, recipe: AddRecipe): void {

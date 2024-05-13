@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Component, DestroyRef, inject, model } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -7,6 +6,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { mergeMap } from 'rxjs';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,11 +18,9 @@ import { MatCardModule } from '@angular/material/card';
 import { DragAndDropComponent } from '../components/drag-and-drop/drag-and-drop.component';
 import { forbiddenCharsValidator } from '../../shared/validators/forbidden-chars-validator';
 import { MyRecipesService } from '../services/my-recipes.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NutritionsTableComponent } from '../components/nutritions-table/nutritions-table.component';
 import { Photos } from '../models/recipe.model';
 import { PhotosService } from '../services/photos.service';
-import { mergeMap, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-create-recipe',
@@ -32,7 +31,6 @@ import { mergeMap, switchMap, tap } from 'rxjs';
     MatButtonModule,
     MatSelectModule,
     MatCardModule,
-    JsonPipe,
     FormsModule,
     ReactiveFormsModule,
     DragAndDropComponent,
@@ -152,7 +150,7 @@ export class CreateRecipeComponent {
         }),
       )
       .subscribe((photos) => {
-        this.photos = photos;
+        this.photos = [...photos];
         this.currentPhotos.set(photos);
       });
   }

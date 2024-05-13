@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginData, SignupData } from '../models/auth-data.model';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ export type Auth = {
   token: string;
   userId: string;
   nick: string;
+  expiresIn: number;
 };
 
 @Injectable({
@@ -24,9 +25,11 @@ export class AuthService {
 
   nick = signal('');
 
+  expiresIn: any;
+
   constructor(
     private http: HttpClient,
-    private route: Router,
+    private router: Router,
   ) {
     this.checkLogged();
   }
@@ -43,7 +46,7 @@ export class AuthService {
     this.http.post<Auth>(APIUrl + '/login', value).subscribe((res) => {
       localStorage.setItem('recipe-app', JSON.stringify(res));
       this.setAuth(true, res);
-      this.route.navigate(['/my-recipes']);
+      this.router.navigate(['/my-recipes']);
     });
   }
 
@@ -52,6 +55,16 @@ export class AuthService {
     this.token.set(auth.token);
     this.userId.set(auth.userId);
     this.nick.set(auth.nick);
+
+    if (!auth.expiresIn) return;
+    this.expiresIn = setTimeout(() => {
+      this.logout();
+    }, this.timeToExpire(auth.expiresIn));
+  }
+
+  private timeToExpire(expiresIn: number): number {
+    const now = new Date().getTime();
+    return expiresIn - now;
   }
 
   logout(): void {
@@ -60,11 +73,15 @@ export class AuthService {
       token: '',
       userId: '',
       nick: '',
+      expiresIn: 0,
     });
-    this.route.navigate(['/global-list']);
+    clearTimeout(this.expiresIn);
+    this.router.navigate(['/global-list']);
   }
 
   signup(value: SignupData): void {
-    this.http.post(APIUrl + '/signup', value).subscribe(() => {});
+    this.http.post(APIUrl + '/signup', value).subscribe(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }
