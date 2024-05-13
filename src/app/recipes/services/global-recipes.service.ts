@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { GetPhotos, GlobalRecipes, RecipeVotes } from '../models/recipe.model';
 import { ResponseGlobalRecipes } from '../models/response-recipe.model';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable, delay, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
+import { PageEvent } from '@angular/material/paginator';
 
 const APIUrl = environment.apiUrl;
 
@@ -12,6 +13,13 @@ const APIUrl = environment.apiUrl;
   providedIn: 'root',
 })
 export class GlobalRecipesService {
+  pagination = signal<PageEvent>({
+    previousPageIndex: 0,
+    pageIndex: 0,
+    pageSize: 10,
+    length: 25,
+  });
+
   constructor(private http: HttpClient) {}
 
   voteRecipe(
@@ -31,11 +39,14 @@ export class GlobalRecipesService {
 
   getGlobalList(): Observable<GlobalRecipes[]> {
     return this.http
-      .get<ResponseGlobalRecipes[]>(APIUrl + '/global-recipes')
+      .get<{
+        recipes: ResponseGlobalRecipes[];
+        count: number;
+      }>(APIUrl + '/global-recipes')
       .pipe(
-        delay(200),
-        map((recipes) =>
-          recipes.map((x) => ({
+        tap((x) => (this.pagination().length = x.count)),
+        map((res) =>
+          res.recipes.map((x) => ({
             id: x._id,
             name: x.name,
             dish: x.dish,

@@ -1,11 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  Signal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { GlobalRecipes } from '../models/recipe.model';
 import { GlobalRecipesService } from '../services/global-recipes.service';
 import {
@@ -19,9 +12,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgClass } from '@angular/common';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PhotosService } from '../services/photos.service';
 import { AuthService } from '../../shared/services/auth.service';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -33,6 +27,7 @@ import { AuthService } from '../../shared/services/auth.service';
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    MatPaginatorModule,
     MatChipsModule,
     NgClass,
   ],
@@ -42,12 +37,9 @@ import { AuthService } from '../../shared/services/auth.service';
 export class GlobalRecipeListComponent {
   userId = computed(() => this.authService.userId());
 
-  globalRecipes: Signal<GlobalRecipes[]> = toSignal(
-    this.globalRecipesService.getGlobalList(),
-    {
-      initialValue: [],
-    },
-  );
+  pagination = computed(() => this.globalRecipesService.pagination());
+
+  globalRecipes = signal<GlobalRecipes[]>([]);
 
   private destroyRef = inject(DestroyRef);
 
@@ -55,7 +47,9 @@ export class GlobalRecipeListComponent {
     private globalRecipesService: GlobalRecipesService,
     private photoService: PhotosService,
     private authService: AuthService,
-  ) {}
+  ) {
+    this.getRecipes();
+  }
 
   onVote(e: Event, index: number, vote: string): void {
     e.stopPropagation();
@@ -68,6 +62,15 @@ export class GlobalRecipeListComponent {
       });
   }
 
+  getRecipes(): void {
+    this.globalRecipesService
+      .getGlobalList()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.globalRecipes.set(res);
+      });
+  }
+
   getPhotos(current: CurrentRecipeExtended): void {
     if (this.globalRecipes()[current.index].photos.length > 0) return;
     this.photoService
@@ -76,5 +79,10 @@ export class GlobalRecipeListComponent {
       .subscribe((photos) => {
         this.globalRecipes()[current.index].photos = photos;
       });
+  }
+
+  handlePageEvent(e: PageEvent): void {
+    this.globalRecipesService.pagination.set(e);
+    this.getRecipes();
   }
 }

@@ -1,12 +1,4 @@
-import {
-  Component,
-  ComponentRef,
-  DestroyRef,
-  OnDestroy,
-  Signal,
-  computed,
-  inject,
-} from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { MyRecipesService } from '../services/my-recipes.service';
 import { JsonPipe, NgFor } from '@angular/common';
 import {
@@ -19,7 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { PhotosService } from '../services/photos.service';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-my-recipe-list',
@@ -32,21 +25,24 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
+    MatPaginatorModule,
   ],
   templateUrl: './my-recipe-list.component.html',
   styleUrl: './my-recipe-list.component.scss',
 })
 export class MyRecipeListComponent {
-  myList: Signal<MyRecipes[]> = toSignal(this.myRecipesService.getRecipes(), {
-    initialValue: [],
-  });
+  myList = signal<MyRecipes[]>([]);
+
+  pagination = computed(() => this.myRecipesService.pagination());
 
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private myRecipesService: MyRecipesService,
     private photosService: PhotosService,
-  ) {}
+  ) {
+    this.getRecipes();
+  }
 
   onPublish(e: Event, index: number): void {
     e.stopPropagation();
@@ -72,7 +68,16 @@ export class MyRecipeListComponent {
       });
   }
 
-  getPhotos(current: CurrentRecipeExtended) {
+  getRecipes(): void {
+    this.myRecipesService
+      .getRecipes()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.myList.set(res);
+      });
+  }
+
+  getPhotos(current: CurrentRecipeExtended): void {
     if (this.myList()[current.index].photos.length > 0) return;
     this.photosService
       .getPhotos(current.photosAlbumId)
@@ -80,5 +85,10 @@ export class MyRecipeListComponent {
       .subscribe((photos) => {
         this.myList()[current.index].photos = photos;
       });
+  }
+
+  handlePageEvent(e: PageEvent): void {
+    this.myRecipesService.pagination.set(e);
+    this.getRecipes();
   }
 }

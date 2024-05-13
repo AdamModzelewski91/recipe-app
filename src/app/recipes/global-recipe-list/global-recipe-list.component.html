@@ -19,3 +19,6 @@
     }
   </ng-template>
 </app-recipes-table>
+<mat-paginator [length]="pagination().length" [pageSize]="pagination().pageSize" [pageIndex]="pagination().pageIndex"
+  [pageSizeOptions]="[5, 10, 25, 50]" aria-label="Select page" (page)="handlePageEvent($event)">
+</mat-paginator>

@@ -1,17 +1,18 @@
-import { DestroyRef, Injectable, inject } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 import { AddRecipe, MyRecipes, UpdateRecipe } from '../models/recipe.model';
 import {
   ResponseMyRecipes,
   ResponseUpdateRecipe,
 } from '../models/response-recipe.model';
 
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { Observable, map, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
 import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
 
 const APIUrl = environment.apiUrl;
 
@@ -20,6 +21,13 @@ const APIUrl = environment.apiUrl;
 })
 export class MyRecipesService {
   private destroyRef = inject(DestroyRef);
+
+  pagination = signal<PageEvent>({
+    previousPageIndex: 0,
+    pageIndex: 0,
+    pageSize: 10,
+    length: 25,
+  });
 
   constructor(
     private http: HttpClient,
@@ -70,17 +78,24 @@ export class MyRecipesService {
   }
 
   getRecipe(id: string): Observable<MyRecipes> {
-    return this.http.get<MyRecipes>(APIUrl + '/my-recipes?id=' + id);
+    return this.http.get<MyRecipes>(APIUrl + '/my-recipes/' + id);
   }
 
   getRecipes(): Observable<MyRecipes[]> {
+    let params = new HttpParams()
+      .set('authorId', this.auth.userId())
+      .set('limit', this.pagination().pageSize)
+      .set('page', this.pagination().pageIndex);
+
     return this.http
-      .get<
-        ResponseMyRecipes[]
-      >(APIUrl + '/my-recipes?authorId=' + this.auth.userId())
+      .get<{
+        recipes: ResponseMyRecipes[];
+        count: number;
+      }>(APIUrl + '/my-recipes?' + params)
       .pipe(
-        map((list) =>
-          list.map((x) => ({
+        tap((x) => (this.pagination().length = x.count)),
+        map((res) =>
+          res.recipes.map((x) => ({
             id: x._id,
             name: x.name,
             dish: x.dish,
