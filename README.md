@@ -1,27 +1,32 @@
-# RecipeApp
+<h1 style="text-align: center"> RecipeApp </h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
+This application is used to save your favorite recipes and share with other people! To add new recipes you need to login to app. After login you ll also have possibility to like and dislike recipes of other users in Global list!
 
-## Development server
+### website: [RecipeApp](https://your-favorite-recipes.netlify.app/)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Tech Stack
 
-## Code scaffolding
+<p> 
+  <a href="https://angular.io" target="_blank" rel="noreferrer"> 
+    <img src="https://angular.dev//assets/icons/favicon-32x32.png" alt="angular" width="40" height="40"/> 
+  </a> 
+  <a href="http://material.angular.io" target="_blank" rel="noreferrer"> 
+    <img src="https://material.angular.io/assets/img/favicons/favicon-32x32.png" alt="angular material" width="40" height="40"> 
+  </a> 
+  <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"> 
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="typescript" width="40" height="40"/> 
+  </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> 
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> 
+  </a> 
+  <a href="https://sass-lang.com" target="_blank" rel="noreferrer"> 
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/sass/sass-original.svg" alt="sass" width="40" height="40"/> 
+  </a>  
+  <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"> 
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> 
+  </a> 
+</p>
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Technical
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Application is written in Angular 17.2. For BE I used NodeJS (Express) and MongoDB to store data. Link to repo: [recipes-api](https://github.com/AdamModzelewski91/recipes-api).
