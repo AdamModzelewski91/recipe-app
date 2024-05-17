@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatListModule } from '@angular/material/list';
 
 import { GlobalRecipes, MyRecipes } from '../../models/recipe.model';
 import { nutritions } from '../nutritions-table/nutritions-table.component';
@@ -41,6 +42,7 @@ export type CurrentRecipeExtended = {
     RouterModule,
     CommonModule,
     LoadingBarComponent,
+    MatListModule,
     QuillViewHTMLComponent,
   ],
   templateUrl: './recipes-table.component.html',

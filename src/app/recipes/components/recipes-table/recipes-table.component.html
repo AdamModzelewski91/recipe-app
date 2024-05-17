@@ -21,13 +21,11 @@
       <mat-chip>difficult: <span>{{ recipe.difficult }}</span></mat-chip>
     </mat-chip-listbox>
     <h3>Ingredients: </h3>
-    <ul>
+    <mat-selection-list>
       @for (ingredient of recipe.ingredients; track $index) {
-      <li>
-        <p>{{ingredient}}</p>
-      </li>
+      <mat-list-option color="warn">{{ingredient}}</mat-list-option>
       }
-    </ul>
+    </mat-selection-list>
     <mat-card class="nutrition">
       <div class="title">
         <h1>Nutrictions</h1>
