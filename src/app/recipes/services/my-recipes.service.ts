@@ -66,6 +66,8 @@ export class MyRecipesService {
     postData.append('prepTime', recipe.prepTime);
     postData.append('cookTime', recipe.cookTime);
     postData.append('serves', recipe.serves);
+    postData.append('ingredients', recipe.ingredients.join('\\|'));
+    postData.append('instructions', recipe.instructions);
     postData.append('nutritions', JSON.stringify(recipe.nutritions));
 
     if (recipe.photos) {
@@ -101,6 +103,8 @@ export class MyRecipesService {
             prepTime: x.prepTime,
             cookTime: x.cookTime,
             serves: x.serves,
+            ingredients: x.ingredients,
+            instructions: x.instructions,
             nutritions: x.nutritions,
             createdBy: x.createdBy,
             photosAlbumId: x.photosAlbumId,

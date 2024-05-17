@@ -55,6 +55,8 @@ export class GlobalRecipesService {
             cookTime: x.cookTime,
             serves: x.serves,
             createdBy: x.createdBy,
+            instructions: x.instructions,
+            ingredients: x.ingredients,
             nutritions: x.nutritions,
             photosAlbumId: x?.photosAlbumId,
             photos: [],

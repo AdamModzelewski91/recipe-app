@@ -1,4 +1,5 @@
 import {
+  CUSTOM_ELEMENTS_SCHEMA,
   Component,
   ContentChild,
   EventEmitter,
@@ -19,6 +20,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { GlobalRecipes, MyRecipes } from '../../models/recipe.model';
 import { nutritions } from '../nutritions-table/nutritions-table.component';
 import { LoadingBarComponent } from '../../../shared/components/loading-bar/loading-bar.component';
+import { QuillViewHTMLComponent } from 'ngx-quill';
 
 export type CurrentRecipeExtended = {
   index: number;
@@ -28,6 +30,7 @@ export type CurrentRecipeExtended = {
 @Component({
   selector: 'app-recipes-table',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     MatExpansionModule,
     MatBadgeModule,
@@ -38,6 +41,7 @@ export type CurrentRecipeExtended = {
     RouterModule,
     CommonModule,
     LoadingBarComponent,
+    QuillViewHTMLComponent,
   ],
   templateUrl: './recipes-table.component.html',
   styleUrl: './recipes-table.component.scss',

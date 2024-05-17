@@ -36,7 +36,10 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/pink-bluegrey.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "quill/dist/quill.core.css",
+              "quill/dist/quill.snow.css"
+
             ],
             "scripts": []
           },

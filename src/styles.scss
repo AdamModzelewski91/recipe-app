@@ -2,3 +2,10 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+quill-view-html {
+  .ql-editor ol li {
+    list-style-type: decimal
+  }
+}

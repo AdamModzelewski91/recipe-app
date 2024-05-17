@@ -5,72 +5,101 @@
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" maxlength="50">
     </mat-form-field>
-    <mat-form-field>
-      <mat-label>Select type of dish:</mat-label>
-      <select matNativeControl formControlName="dish">
-        <option value="cake">Cake</option>
-        <option value="currie">Currie</option>
-        <option value="dessert">Dessert</option>
-        <option value="soup">Soup</option>
-        <option value="salad">Salad</option>
-        <option value="snack">Snack</option>
-        <option value="sandwich">Sandwich</option>
-      </select>
-      @if (form.controls.dish.getError('required')) {
-      <mat-error>Choose your dish!</mat-error>
+    <div class="options">
+      <mat-form-field>
+        <mat-label>Select type of dish:</mat-label>
+        <select matNativeControl formControlName="dish">
+          <option value="cake">Cake</option>
+          <option value="currie">Currie</option>
+          <option value="dessert">Dessert</option>
+          <option value="soup">Soup</option>
+          <option value="salad">Salad</option>
+          <option value="snack">Snack</option>
+          <option value="sandwich">Sandwich</option>
+        </select>
+        @if (form.controls.dish.getError('required')) {
+        <mat-error>Choose your dish!</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Difficult:</mat-label>
+        <select matNativeControl formControlName="difficult">
+          <option value="easy">Easy</option>
+          <option value="moderate">Moderate</option>
+          <option value="hard">Hard</option>
+        </select>
+        @if (form.controls.difficult.getError('required')) {
+        <mat-error>Choose difficulty!</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div class="timers">
+      <mat-form-field>
+        <mat-label>Prep time:</mat-label>
+        <input type="text" matInput placeholder="min" formControlName="prepTime">
+        @if (form.controls.prepTime.getError('required')) {
+        <mat-error>Calories required!</mat-error>
+        }
+        @if (form.controls.prepTime.getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+        }
+        @if (form.controls.prepTime.getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Cook time:</mat-label>
+        <input type="text" matInput placeholder="min" formControlName="cookTime">
+        @if (form.controls.cookTime.getError('required')) {
+        <mat-error>Cook time required!</mat-error>
+        }
+        @if (form.controls.cookTime.getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+        }
+        @if (form.controls.cookTime.getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Serves:</mat-label>
+        <input type="text" matInput formControlName="serves">
+        @if (form.controls.serves.getError('required')) {
+        <mat-error>Serves amount required!</mat-error>
+        }
+        @if (form.controls.serves.getError('max')) {
+        <mat-error>Max value reached!</mat-error>
+        }
+        @if (form.controls.serves.getError('forbiddenName')) {
+        <mat-error>Only numbers!</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div formArrayName="ingredients" class="ingredients">
+      <h2>Ingredients:</h2>
+
+      @for (ingredient of form.controls.ingredients.controls; track ingredient) {
+      <div class="ingredient">
+        <app-ingredients [formControl]="ingredient"></app-ingredients>
+        <button mat-raised-button color="warn" type="button" (click)="onDeleteIngredient($index)"><mat-icon
+            fontIcon="delete"></mat-icon></button>
+      </div>
       }
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Difficult:</mat-label>
-      <select matNativeControl formControlName="difficult">
-        <option value="easy">Easy</option>
-        <option value="moderate">Moderate</option>
-        <option value="hard">Hard</option>
-      </select>
-      @if (form.controls.difficult.getError('required')) {
-      <mat-error>Choose difficulty!</mat-error>
+      @if (form.controls.ingredients.getError('minLength')) {
+      <p>Add at least 2 Ingredients!</p>
       }
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Prep time:</mat-label>
-      <input type="text" matInput placeholder="min" formControlName="prepTime">
-      @if (form.controls.prepTime.getError('required')) {
-      <mat-error>Calories required!</mat-error>
-      }
-      @if (form.controls.prepTime.getError('max')) {
-      <mat-error>Max value reached!</mat-error>
-      }
-      @if (form.controls.prepTime.getError('forbiddenName')) {
-      <mat-error>Only numbers!</mat-error>
-      }
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Cook time:</mat-label>
-      <input type="text" matInput placeholder="min" formControlName="cookTime">
-      @if (form.controls.cookTime.getError('required')) {
-      <mat-error>Cook time required!</mat-error>
-      }
-      @if (form.controls.cookTime.getError('max')) {
-      <mat-error>Max value reached!</mat-error>
-      }
-      @if (form.controls.cookTime.getError('forbiddenName')) {
-      <mat-error>Only numbers!</mat-error>
-      }
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Serves:</mat-label>
-      <input type="text" matInput formControlName="serves">
-      @if (form.controls.serves.getError('required')) {
-      <mat-error>Serves amount required!</mat-error>
-      }
-      @if (form.controls.serves.getError('max')) {
-      <mat-error>Max value reached!</mat-error>
-      }
-      @if (form.controls.serves.getError('forbiddenName')) {
-      <mat-error>Only numbers!</mat-error>
-      }
-    </mat-form-field>
+      <div class="add-button">
+        <button mat-raised-button color="primary" type="button" (click)="onCreateNewIngredient()">
+          <mat-icon fontIcon="add"></mat-icon> Add new ingredient
+        </button>
+      </div>
+    </div>
     <app-nutritions-table formGroupName="nutritions"></app-nutritions-table>
+    <div class="instractions">
+      <h2>Instructions:</h2>
+      <quill-editor [modules]="QuillConfiguration" formControlName="instructions">
+      </quill-editor>
+
+    </div>
     <app-drag-and-drop [(images)]="uploadedImages" [(preview)]="currentPhotos"></app-drag-and-drop>
     <div class="form-buttons">
       <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Submit</button>

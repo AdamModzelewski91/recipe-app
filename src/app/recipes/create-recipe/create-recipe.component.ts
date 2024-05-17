@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, model } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  ViewChild,
+  inject,
+  model,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormsModule,
@@ -14,6 +21,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { DragAndDropComponent } from '../components/drag-and-drop/drag-and-drop.component';
 import { forbiddenCharsValidator } from '../../shared/validators/forbidden-chars-validator';
@@ -21,6 +30,9 @@ import { MyRecipesService } from '../services/my-recipes.service';
 import { NutritionsTableComponent } from '../components/nutritions-table/nutritions-table.component';
 import { Photos } from '../models/recipe.model';
 import { PhotosService } from '../services/photos.service';
+import { IngredientsComponent } from '../components/ingredients/ingredients.component';
+import { minLengthArray } from '../../shared/validators/min-length-array';
+import { QuillEditorComponent, QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-create-recipe',
@@ -36,12 +48,28 @@ import { PhotosService } from '../services/photos.service';
     DragAndDropComponent,
     NutritionsTableComponent,
     RouterModule,
+    MatIconModule,
+    MatTabsModule,
+    IngredientsComponent,
+    QuillEditorComponent,
+    QuillModule,
   ],
   templateUrl: './create-recipe.component.html',
   styleUrl: './create-recipe.component.scss',
 })
-export class CreateRecipeComponent {
+export class CreateRecipeComponent implements OnInit {
   protected uploadedImages = model<File[]>([]);
+
+  readonly QuillConfiguration = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ align: [] }],
+      ['blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ],
+  };
 
   currentPhotos = model<Photos[]>([]);
 
@@ -82,6 +110,11 @@ export class CreateRecipeComponent {
         forbiddenCharsValidator(/[a-zA-Z]/i),
       ],
     ],
+    ingredients: this.nfb.array<string>(
+      [],
+      [minLengthArray(2), Validators.required],
+    ),
+    instructions: ['', Validators.required],
     nutritions: this.nfb.group({
       calories: [
         '',
@@ -137,6 +170,16 @@ export class CreateRecipeComponent {
     }
   }
 
+  onDeleteIngredient(index: number) {
+    this.form.controls.ingredients.removeAt(index);
+  }
+
+  onCreateNewIngredient(val: string = ''): void {
+    this.form.controls.ingredients.push(
+      this.nfb.control(val, [Validators.required]),
+    );
+  }
+
   private editRecipe(id: string): void {
     this.idRecipe = id;
     this.myRecipesService
@@ -145,7 +188,11 @@ export class CreateRecipeComponent {
         takeUntilDestroyed(this.destroyRef),
         mergeMap((recipe) => {
           this.photosAlbumId = recipe.photosAlbumId;
-          this.form.reset(recipe);
+          const { ingredients, ...rest } = recipe;
+          this.form.reset(rest);
+          ingredients.forEach((ing) => {
+            this.onCreateNewIngredient(ing);
+          });
           return this.photosService.getPhotos(recipe.photosAlbumId);
         }),
       )
@@ -163,7 +210,7 @@ export class CreateRecipeComponent {
       }
     }
     const result = this.photos.filter((item) => !photoIds.includes(item.id));
-    return result.map((x) => x.id).join(',');
+    return result.map((x) => x.id).join('\\|');
   }
 
   onSubmit(): void {

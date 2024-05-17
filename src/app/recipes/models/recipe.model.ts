@@ -6,6 +6,8 @@ export type Recipe = {
   cookTime: string;
   serves: string;
   nutritions: Nutritions;
+  ingredients: string[];
+  instructions: string;
 };
 
 export type Nutritions = {

@@ -1,0 +1,7 @@
+<mat-form-field>
+  <mat-label>Ingredient</mat-label>
+  <input matInput maxlength="50" placeholder="ex. Flour 250g" [formControl]="formControl()">
+  @if (formControl().getError('required') && formControl().touched) {
+  <mat-error>Ingredient required!</mat-error>
+  }
+</mat-form-field>

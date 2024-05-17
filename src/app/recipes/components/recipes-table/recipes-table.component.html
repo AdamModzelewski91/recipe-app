@@ -20,6 +20,14 @@
       <mat-chip>dish: <span>{{ recipe.dish }}</span></mat-chip>
       <mat-chip>difficult: <span>{{ recipe.difficult }}</span></mat-chip>
     </mat-chip-listbox>
+    <h3>Ingredients: </h3>
+    <ul>
+      @for (ingredient of recipe.ingredients; track $index) {
+      <li>
+        <p>{{ingredient}}</p>
+      </li>
+      }
+    </ul>
     <mat-card class="nutrition">
       <div class="title">
         <h1>Nutrictions</h1>
@@ -36,9 +44,13 @@
         }
       </div>
     </mat-card>
+    <div>
+      <h3>Instructions:</h3>
+      <quill-view-html [content]="recipe.instructions"></quill-view-html>
+    </div>
     <app-loading-bar></app-loading-bar>
     @if (recipe.photos.length > 0) {
-    <p>Photos:</p>
+    <h3>Photos:</h3>
     <div class="photos">
       @for (photo of recipe.photos; track $index) {
       <img [src]="photo.img" [title]="photo.name" />
