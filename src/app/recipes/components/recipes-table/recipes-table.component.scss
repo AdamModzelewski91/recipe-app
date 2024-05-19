@@ -2,6 +2,10 @@
   display: block;
   max-width: 1000px;
   margin: 0 auto 76px;
+
+  @media (max-width: 600px) { 
+    margin-bottom: 109px;
+  }
 }
 
 .mat-expansion-panel-header-title {
@@ -13,13 +17,21 @@
   }
 }
 
+.mat-expansion-panel-header.mat-expanded {
+
+  @media (max-width: 600px) { 
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
 .mat-expansion-panel-header-description {
   flex-grow: 1;
   justify-content: space-between;
 }
 
 .mat-expansion-panel-header {
-  
+
   @media (max-width: 600px) {  
   height: inherit;
 
