@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PhotosService } from '../services/photos.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SearchComponent } from '../components/search/search.component';
 
 @Component({
   selector: 'app-global-recipe-list',
@@ -30,6 +31,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatPaginatorModule,
     MatChipsModule,
     NgClass,
+    SearchComponent,
   ],
   templateUrl: './global-recipe-list.component.html',
   styleUrl: './global-recipe-list.component.scss',
@@ -40,6 +42,8 @@ export class GlobalRecipeListComponent {
   pagination = computed(() => this.globalRecipesService.pagination());
 
   globalRecipes = signal<GlobalRecipes[]>([]);
+
+  searchRecipes = signal<GlobalRecipes[]>([]);
 
   private destroyRef = inject(DestroyRef);
 
@@ -79,6 +83,14 @@ export class GlobalRecipeListComponent {
       .subscribe((photos) => {
         this.globalRecipes()[current.index].photos = photos;
       });
+  }
+
+  onSearch(val: string) {
+    if (!val) return this.getRecipes();
+
+    this.globalRecipesService.searchRecipes(val).subscribe((res) => {
+      this.globalRecipes.set(res);
+    });
   }
 
   handlePageEvent(e: PageEvent): void {

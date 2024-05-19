@@ -1,0 +1,7 @@
+<div class="wrapper">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Search for titles or creators" #input>
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="button" (click)="onSearch(input.value)">Search</button>
+</div>

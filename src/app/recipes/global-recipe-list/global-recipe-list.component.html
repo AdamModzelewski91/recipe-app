@@ -1,3 +1,4 @@
+<app-search (search)="onSearch($event)"></app-search>
 <app-recipes-table [recipesList]="globalRecipes()" (onExpend)="getPhotos($event)">
   <ng-template let-index>
     <span>by {{globalRecipes()[index].createdBy.author}}</span>

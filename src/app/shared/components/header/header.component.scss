@@ -13,6 +13,19 @@
   .active {
     background-color: red;
   }
+
+  @media (max-width: 600px) {
+    flex-direction: column-reverse;
+    padding-bottom: 10px;
+  }
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  height: inherit;
+
+  @media (max-width: 600px) {
+    padding: 0 10px;
+  }
 }
 
 mat-toolbar {
@@ -21,6 +34,14 @@ mat-toolbar {
 
 li {
   list-style: none;
+
+  @media (max-width: 600px) {
+    width: 100%;
+
+    a {
+      width: 100%;
+    }
+  }
 }
 
 ul {

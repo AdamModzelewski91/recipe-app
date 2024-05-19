@@ -67,6 +67,36 @@ export class GlobalRecipesService {
       );
   }
 
+  searchRecipes(val: string): Observable<any> {
+    return this.http
+      .get<{
+        recipes: ResponseGlobalRecipes[];
+        count: number;
+      }>(APIUrl + '/global-recipes?query=' + val)
+      .pipe(
+        tap((x) => (this.pagination().length = x.count)),
+        map((res) =>
+          res.recipes.map((x) => ({
+            id: x._id,
+            name: x.name,
+            dish: x.dish,
+            difficult: x.difficult,
+            prepTime: x.prepTime,
+            cookTime: x.cookTime,
+            serves: x.serves,
+            createdBy: x.createdBy,
+            instructions: x.instructions,
+            ingredients: x.ingredients,
+            nutritions: x.nutritions,
+            photosAlbumId: x?.photosAlbumId,
+            photos: [],
+            published: x.published,
+            votes: x.votes,
+          })),
+        ),
+      );
+  }
+
   getPhotos(id: string): Observable<GetPhotos[]> {
     return this.http.get<GetPhotos[]>(APIUrl + '/photos/' + id);
   }

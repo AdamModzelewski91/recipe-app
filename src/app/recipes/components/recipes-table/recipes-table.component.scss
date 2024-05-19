@@ -7,11 +7,27 @@
 .mat-expansion-panel-header-title {
   justify-content: left;
   font-size: 20px;
+
+  @media (max-width: 600px) { 
+    padding-bottom: 5px;
+  }
 }
 
 .mat-expansion-panel-header-description {
   flex-grow: 1;
   justify-content: space-between;
+}
+
+.mat-expansion-panel-header {
+  
+  @media (max-width: 600px) {  
+  height: inherit;
+
+  ::ng-deep .mat-content {
+      flex-direction: column;
+      padding: 10px 0;
+    }  
+  }
 }
 
 .nutrition {
