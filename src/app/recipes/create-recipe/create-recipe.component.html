@@ -102,8 +102,8 @@
     </div>
     <app-drag-and-drop [(images)]="uploadedImages" [(preview)]="currentPhotos"></app-drag-and-drop>
     <div class="form-buttons">
-      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Submit</button>
       <button mat-raised-button color="warn" type="button" (click)="onResetForm()">Clear</button>
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Submit</button>
     </div>
   </form>
 </mat-card>

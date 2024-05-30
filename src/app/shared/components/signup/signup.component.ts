@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -12,6 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { AuthService } from '../../services/auth.service';
 import { confirmPasswordValidator } from '../../validators/confirm-password';
+import { NickValidationService } from '../../validators/nick-validation.service';
+import { EmailValidationService } from '../../validators/email-validation.service';
 
 @Component({
   selector: 'app-signup',
@@ -27,13 +29,26 @@ import { confirmPasswordValidator } from '../../validators/confirm-password';
   styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
+  isLoading = computed(() => this.emailValidation.isLoading());
+
   form = this.nfb.group(
     {
-      email: ['', [Validators.required, Validators.email]],
-      nick: [
-        '',
-        [Validators.required, Validators.minLength(2), Validators.maxLength(8)],
-      ],
+      email: this.nfb.control('', {
+        validators: [Validators.required, Validators.email],
+        asyncValidators: [
+          this.emailValidation.validate.bind(this.emailValidation),
+        ],
+        updateOn: 'blur',
+      }),
+      nick: this.nfb.control('', {
+        validators: [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(8),
+        ],
+        asyncValidators: this.nickValidation.validate.bind(this.nickValidation),
+        updateOn: 'blur',
+      }),
       password: ['', [Validators.required, Validators.minLength(6)]],
       passwordConfirm: ['', [Validators.required]],
     },
@@ -43,6 +58,8 @@ export class SignupComponent {
   constructor(
     private auth: AuthService,
     private nfb: NonNullableFormBuilder,
+    private emailValidation: EmailValidationService,
+    private nickValidation: NickValidationService,
   ) {}
 
   onSignup() {

@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginData, SignupData } from '../models/auth-data.model';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const APIUrl = environment.apiUrl;
 
@@ -25,11 +26,14 @@ export class AuthService {
 
   nick = signal('');
 
+  errorMessage = signal('');
+
   expiresIn: any;
 
   constructor(
     private http: HttpClient,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {
     this.checkLogged();
   }
@@ -43,10 +47,16 @@ export class AuthService {
   }
 
   login(value: LoginData): void {
-    this.http.post<Auth>(APIUrl + '/login', value).subscribe((res) => {
-      localStorage.setItem('recipe-app', JSON.stringify(res));
-      this.setAuth(true, res);
-      this.router.navigate(['/my-recipes']);
+    this.http.post<Auth>(APIUrl + '/login', value).subscribe({
+      next: (res) => {
+        localStorage.setItem('recipe-app', JSON.stringify(res));
+        this.setAuth(true, res);
+        this.router.navigate(['/my-recipes']);
+        this.openSnackBar('Successfully logged!', 'OK');
+      },
+      error: (err) => {
+        this.openSnackBar(err.error.message, 'OK');
+      },
     });
   }
 
@@ -79,9 +89,21 @@ export class AuthService {
     this.router.navigate(['/global-list']);
   }
 
+  private openSnackBar(message: string, action: string): void {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
+  }
+
   signup(value: SignupData): void {
-    this.http.post(APIUrl + '/signup', value).subscribe(() => {
-      this.router.navigate(['/login']);
+    this.http.post(APIUrl + '/signup', value).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+        this.openSnackBar('Successfully signed up!', 'OK');
+      },
+      error: (err) => {
+        this.openSnackBar(err.error.message, 'OK');
+      },
     });
   }
 }

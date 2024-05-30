@@ -12,7 +12,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(cloned).pipe(
     catchError((err) => {
-      if (err.status === 401) {
+      if (err.status === 401 && err.errorCode === 'INVALID_TOKEN') {
         authService.logout();
       }
       return throwError(() => err);

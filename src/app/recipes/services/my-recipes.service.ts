@@ -11,6 +11,7 @@ import { ResponseMyRecipes } from '../models/response-recipe.model';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
 import { AuthService } from '../../shared/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const APIUrl = environment.apiUrl;
 
@@ -31,6 +32,7 @@ export class MyRecipesService {
     private http: HttpClient,
     private auth: AuthService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   addRecipe(recipe: AddRecipe): void {
@@ -40,8 +42,12 @@ export class MyRecipesService {
     this.http
       .post(APIUrl + '/my-recipes', postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.router.navigate(['/my-recipes']);
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/my-recipes']);
+          this.openSnackBar('Successfully saved!', 'OK');
+        },
+        error: (err) => this.openSnackBar('Failed to update!', 'OK'),
       });
   }
 
@@ -54,9 +60,19 @@ export class MyRecipesService {
     this.http
       .put(APIUrl + '/my-recipes/' + recipe.id, postData)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.router.navigate(['/my-recipes']);
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/my-recipes']);
+          this.openSnackBar('Successfully updated!', 'OK');
+        },
+        error: (err) => this.openSnackBar('Failed to update!', 'OK'),
       });
+  }
+
+  private openSnackBar(message: string, action: string): void {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
   }
 
   private appendFormData(postData: FormData, recipe: AddRecipe): void {

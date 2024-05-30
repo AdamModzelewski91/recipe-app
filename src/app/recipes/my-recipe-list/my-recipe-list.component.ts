@@ -1,4 +1,11 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { MyRecipesService } from '../services/my-recipes.service';
 import { JsonPipe, NgFor } from '@angular/common';
 import {
@@ -13,6 +20,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { PhotosService } from '../services/photos.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
+import { Observable, switchMap, take, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-my-recipe-list',
@@ -30,7 +41,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
   templateUrl: './my-recipe-list.component.html',
   styleUrl: './my-recipe-list.component.scss',
 })
-export class MyRecipeListComponent {
+export class MyRecipeListComponent implements OnInit {
   myList = signal<MyRecipes[]>([]);
 
   pagination = computed(() => this.myRecipesService.pagination());
@@ -40,7 +51,11 @@ export class MyRecipeListComponent {
   constructor(
     private myRecipesService: MyRecipesService,
     private photosService: PhotosService,
-  ) {
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {}
+
+  ngOnInit(): void {
     this.getRecipes();
   }
 
@@ -48,24 +63,90 @@ export class MyRecipeListComponent {
     e.stopPropagation();
 
     const recipe = this.myList()[index];
-    this.myRecipesService
-      .publishRecipe(recipe)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => {
-        this.myList()[index].published = res.published;
-      });
+
+    const title = 'Warning';
+    const text = `Are you sure that you want to UNPUBLISH your ${recipe.name}? You ll lose all your votes!`;
+
+    if (!recipe.published) {
+      this.myRecipesService
+        .publishRecipe(recipe)
+        .pipe(take(1))
+        .subscribe({
+          next: (res) => {
+            this.myList()[index].published = res.published;
+            this.openSnackBar('Successfully Published!', 'OK');
+          },
+          error: (err) => this.openSnackBar('Failed to publish!', 'OK'),
+        });
+    } else {
+      this.openDialog(title, text)
+        .pipe(
+          take(1),
+          switchMap((result) => {
+            if (!result) return throwError(() => 'canceled');
+
+            return this.myRecipesService.publishRecipe(recipe);
+          }),
+          take(1),
+        )
+        .subscribe({
+          next: (res) => {
+            this.myList()[index].published = res.published;
+            this.openSnackBar('Successfully unpublished!', 'OK');
+          },
+          error: (err) => {
+            if (err !== 'canceled')
+              this.openSnackBar('Failed to unpublish!', 'OK');
+          },
+        });
+    }
   }
 
   onDelete(e: Event, index: number): void {
     e.stopPropagation();
 
-    const { id } = this.myList()[index];
-    this.myRecipesService
-      .deleteRecipe(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.myList().splice(index, 1);
+    const { id, name } = this.myList()[index];
+    const title = 'Warning';
+    const text = `Are you sure that you want DELETE ${name}?`;
+
+    this.openDialog(title, text)
+      .pipe(
+        take(1),
+        switchMap((result) => {
+          if (!result) return throwError(() => 'canceled');
+
+          return this.myRecipesService.deleteRecipe(id);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => {
+          this.myList().splice(index, 1);
+          this.openSnackBar('Successfully Deleted!', 'OK');
+        },
+        error: (err) => {
+          if (err !== 'canceled') {
+            this.openSnackBar('Failed to Delete.', 'OK');
+          }
+        },
       });
+  }
+
+  private openDialog(title: string, text: string): Observable<boolean> {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title,
+        text,
+      },
+    });
+
+    return dialogRef.afterClosed();
+  }
+
+  private openSnackBar(message: string, action: string): void {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
   }
 
   getRecipes(): void {

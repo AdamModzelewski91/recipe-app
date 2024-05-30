@@ -10,6 +10,12 @@
       @if (form.controls.email.getError('required')) {
       <mat-error>Email is <strong>required</strong></mat-error>
       }
+      @if (form.controls.email.getError('emailUnavailable')) {
+      <mat-error>Email is <strong>taken</strong>. Try another one!</mat-error>
+      }
+      @if (!form.controls.email.errors && !isLoading()) {
+      <mat-hint class="accept">Email is <strong>available</strong>!</mat-hint>
+      }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Nick</mat-label>
@@ -23,6 +29,12 @@
       @if (form.controls.nick.getError('required')) {
       <mat-error>Nick is <strong>required</strong></mat-error>
       }
+      @if (form.controls.nick.getError('nickUnavailable')) {
+      <mat-error>Nick is <strong>taken</strong>. Try another one!</mat-error>
+      }
+      @if (!form.controls.nick.errors && !isLoading()){
+      <mat-hint class="accept">Nick is <strong>available</strong>!</mat-hint>
+      }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Password</mat-label>
@@ -35,10 +47,10 @@
       }
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Confirm Password</mat-label>
+      <mat-label>Confirm password</mat-label>
       <input type="password" matInput formControlName="passwordConfirm">
       @if (form.controls.passwordConfirm.getError('required')) {
-      <mat-error>Password is <strong>required</strong></mat-error>
+      <mat-error>Confirm your <strong>password</strong></mat-error>
       }
     </mat-form-field>
     @if (form.errors?.['PasswordNoMatch'] && form.controls.passwordConfirm.touched) {

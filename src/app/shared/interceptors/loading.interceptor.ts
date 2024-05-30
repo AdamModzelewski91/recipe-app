@@ -1,6 +1,6 @@
 import { HttpContextToken, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, delay, finalize, throwError } from 'rxjs';
+import { delay, finalize } from 'rxjs';
 import { LoadingSpinnerService } from '../services/loading-spinner.service';
 import { LoadingBarService } from '../services/loading-bar.service';
 
