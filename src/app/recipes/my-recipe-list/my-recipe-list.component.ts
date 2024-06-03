@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   OnInit,
@@ -53,6 +54,7 @@ export class MyRecipeListComponent implements OnInit {
     private photosService: PhotosService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +76,7 @@ export class MyRecipeListComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.myList()[index].published = res.published;
+            this.cd.markForCheck();
             this.openSnackBar('Successfully Published!', 'OK');
           },
           error: (err) => this.openSnackBar('Failed to publish!', 'OK'),
@@ -92,6 +95,7 @@ export class MyRecipeListComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.myList()[index].published = res.published;
+            this.cd.markForCheck();
             this.openSnackBar('Successfully unpublished!', 'OK');
           },
           error: (err) => {
@@ -122,6 +126,7 @@ export class MyRecipeListComponent implements OnInit {
       .subscribe({
         next: () => {
           this.myList().splice(index, 1);
+          this.cd.markForCheck();
           this.openSnackBar('Successfully Deleted!', 'OK');
         },
         error: (err) => {
@@ -165,6 +170,7 @@ export class MyRecipeListComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((photos) => {
         this.myList()[current.index].photos = photos;
+        this.cd.markForCheck();
       });
   }
 

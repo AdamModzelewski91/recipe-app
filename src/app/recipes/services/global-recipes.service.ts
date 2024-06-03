@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { GetPhotos, GlobalRecipes, RecipeVotes } from '../models/recipe.model';
 import { ResponseGlobalRecipes } from '../models/response-recipe.model';
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SkipLoading } from '../../shared/interceptors/loading.interceptor';
@@ -38,11 +38,15 @@ export class GlobalRecipesService {
   }
 
   getGlobalList(): Observable<GlobalRecipes[]> {
+    let params = new HttpParams()
+      .set('limit', this.pagination().pageSize)
+      .set('page', this.pagination().pageIndex);
+
     return this.http
       .get<{
         recipes: ResponseGlobalRecipes[];
         count: number;
-      }>(APIUrl + '/global-recipes')
+      }>(APIUrl + '/global-recipes?' + params)
       .pipe(
         tap((x) => (this.pagination().length = x.count)),
         map((res) =>

@@ -1,4 +1,12 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { GlobalRecipes } from '../models/recipe.model';
 import { GlobalRecipesService } from '../services/global-recipes.service';
 import {
@@ -35,6 +43,7 @@ import { SearchComponent } from '../components/search/search.component';
   ],
   templateUrl: './global-recipe-list.component.html',
   styleUrl: './global-recipe-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GlobalRecipeListComponent {
   userId = computed(() => this.authService.userId());
@@ -43,14 +52,13 @@ export class GlobalRecipeListComponent {
 
   globalRecipes = signal<GlobalRecipes[]>([]);
 
-  searchRecipes = signal<GlobalRecipes[]>([]);
-
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private globalRecipesService: GlobalRecipesService,
     private photoService: PhotosService,
     private authService: AuthService,
+    private cd: ChangeDetectorRef,
   ) {
     this.getRecipes();
   }
@@ -82,10 +90,11 @@ export class GlobalRecipeListComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((photos) => {
         this.globalRecipes()[current.index].photos = photos;
+        this.cd.markForCheck();
       });
   }
 
-  onSearch(val: string) {
+  onSearch(val: string): void {
     if (!val) return this.getRecipes();
 
     this.globalRecipesService.searchRecipes(val).subscribe((res) => {

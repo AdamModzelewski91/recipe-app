@@ -53,7 +53,7 @@ export class DragAndDropComponent {
       reader.readAsDataURL(file);
 
       reader.addEventListener('load', (img) => {
-        this.preview().push({ img: img.target?.result });
+        this.preview.update((x) => [...x, { img: img.target?.result }]);
       });
     }
 
