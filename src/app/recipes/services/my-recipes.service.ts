@@ -33,7 +33,7 @@ export class MyRecipesService {
     private auth: AuthService,
     private router: Router,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
   addRecipe(recipe: AddRecipe): void {
     const postData = new FormData();
@@ -79,9 +79,9 @@ export class MyRecipesService {
     postData.append('name', recipe.name);
     postData.append('dish', recipe.dish);
     postData.append('difficult', recipe.difficult);
-    postData.append('prepTime', recipe.prepTime);
-    postData.append('cookTime', recipe.cookTime);
-    postData.append('serves', recipe.serves);
+    postData.append('prepTime', recipe.prepTime + '');
+    postData.append('cookTime', recipe.cookTime + '');
+    postData.append('serves', recipe.serves + '');
     postData.append('ingredients', recipe.ingredients.join('\\|'));
     postData.append('instructions', recipe.instructions);
     postData.append('nutritions', JSON.stringify(recipe.nutritions));

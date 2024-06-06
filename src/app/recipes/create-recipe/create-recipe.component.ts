@@ -87,7 +87,7 @@ export class CreateRecipeComponent implements OnInit {
     dish: ['', [Validators.required]],
     difficult: ['', [Validators.required]],
     prepTime: [
-      '',
+      null as number | null,
       [
         Validators.required,
         Validators.max(300),
@@ -95,7 +95,7 @@ export class CreateRecipeComponent implements OnInit {
       ],
     ],
     cookTime: [
-      '',
+      null as number | null,
       [
         Validators.required,
         Validators.max(300),
@@ -103,7 +103,7 @@ export class CreateRecipeComponent implements OnInit {
       ],
     ],
     serves: [
-      '',
+      null as number | null,
       [
         Validators.required,
         Validators.max(24),
@@ -117,7 +117,7 @@ export class CreateRecipeComponent implements OnInit {
     instructions: ['', Validators.required],
     nutritions: this.nfb.group({
       calories: [
-        '',
+        null as number | null,
         [
           Validators.required,
           Validators.max(9999),
@@ -125,7 +125,7 @@ export class CreateRecipeComponent implements OnInit {
         ],
       ],
       fat: [
-        '',
+        null as number | null,
         [
           Validators.required,
           Validators.max(1000),
@@ -133,7 +133,7 @@ export class CreateRecipeComponent implements OnInit {
         ],
       ],
       carbohydrate: [
-        '',
+        null as number | null,
         [
           Validators.required,
           Validators.max(1000),
@@ -141,7 +141,7 @@ export class CreateRecipeComponent implements OnInit {
         ],
       ],
       protein: [
-        '',
+        null as number | null,
         [
           Validators.required,
           Validators.max(1000),
@@ -158,7 +158,7 @@ export class CreateRecipeComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private photosService: PhotosService,
     private nfb: NonNullableFormBuilder,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.form.valueChanges

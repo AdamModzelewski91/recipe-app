@@ -18,6 +18,8 @@ export interface ResponseMyRecipes extends MyRecipes {
   _id: string;
 }
 
-export interface ResponseGlobalRecipes extends GlobalRecipes {
+export interface ResponseGlobalRecipes extends Omit<GlobalRecipes, 'id' | 'photos'> {
   _id: string;
+  createdAt: string;
+  updatedAt: string;
 }

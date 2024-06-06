@@ -9,6 +9,24 @@ import { PageEvent } from '@angular/material/paginator';
 
 const APIUrl = environment.apiUrl;
 
+const recipeResponse = (x: ResponseGlobalRecipes) => ({
+  id: x._id,
+  name: x.name,
+  dish: x.dish,
+  difficult: x.difficult,
+  prepTime: x.prepTime,
+  cookTime: x.cookTime,
+  serves: x.serves,
+  createdBy: x.createdBy,
+  instructions: x.instructions,
+  ingredients: x.ingredients,
+  nutritions: x.nutritions,
+  photosAlbumId: x?.photosAlbumId,
+  photos: [],
+  published: x.published,
+  votes: x.votes,
+});
+
 @Injectable({
   providedIn: 'root',
 })
@@ -38,7 +56,7 @@ export class GlobalRecipesService {
   }
 
   getGlobalList(): Observable<GlobalRecipes[]> {
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('limit', this.pagination().pageSize)
       .set('page', this.pagination().pageIndex);
 
@@ -49,25 +67,7 @@ export class GlobalRecipesService {
       }>(APIUrl + '/global-recipes?' + params)
       .pipe(
         tap((x) => (this.pagination().length = x.count)),
-        map((res) =>
-          res.recipes.map((x) => ({
-            id: x._id,
-            name: x.name,
-            dish: x.dish,
-            difficult: x.difficult,
-            prepTime: x.prepTime,
-            cookTime: x.cookTime,
-            serves: x.serves,
-            createdBy: x.createdBy,
-            instructions: x.instructions,
-            ingredients: x.ingredients,
-            nutritions: x.nutritions,
-            photosAlbumId: x?.photosAlbumId,
-            photos: [],
-            published: x.published,
-            votes: x.votes,
-          })),
-        ),
+        map((res) => res.recipes.map(recipeResponse)),
       );
   }
 
@@ -79,25 +79,7 @@ export class GlobalRecipesService {
       }>(APIUrl + '/global-recipes?query=' + val)
       .pipe(
         tap((x) => (this.pagination().length = x.count)),
-        map((res) =>
-          res.recipes.map((x) => ({
-            id: x._id,
-            name: x.name,
-            dish: x.dish,
-            difficult: x.difficult,
-            prepTime: x.prepTime,
-            cookTime: x.cookTime,
-            serves: x.serves,
-            createdBy: x.createdBy,
-            instructions: x.instructions,
-            ingredients: x.ingredients,
-            nutritions: x.nutritions,
-            photosAlbumId: x?.photosAlbumId,
-            photos: [],
-            published: x.published,
-            votes: x.votes,
-          })),
-        ),
+        map((res) => res.recipes.map(recipeResponse)),
       );
   }
 

@@ -2,19 +2,19 @@ export type Recipe = {
   name: string;
   dish: string;
   difficult: string;
-  prepTime: string;
-  cookTime: string;
-  serves: string;
+  prepTime: number | null;
+  cookTime: number | null;
+  serves: number | null;
   nutritions: Nutritions;
   ingredients: string[];
   instructions: string;
 };
 
 export type Nutritions = {
-  calories: string;
-  fat: string;
-  carbohydrate: string;
-  protein: string;
+  calories: number | null;
+  fat: number | null;
+  carbohydrate: number | null;
+  protein: number | null;
 };
 
 export interface NewRecipe extends Recipe {

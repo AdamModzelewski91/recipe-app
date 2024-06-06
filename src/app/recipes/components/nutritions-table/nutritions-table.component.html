@@ -9,20 +9,20 @@
     <tr>
       <td mat-cell>
         @for (item of nutritions(); track $index) {
-          <mat-form-field>
-            <label matTextPrefix>{{item.name | titlecase}}</label>
-            <input type="text" [formControlName]="item.name" matInput>
-            <label matTextSuffix>{{item.unit}}</label>
-            @if (form.get(item.name)?.getError('required')) {
-              <mat-error><span>{{item.name | titlecase}}</span> required!</mat-error>
-            } 
-            @if (form.get(item.name)?.getError('max')) {
-              <mat-error>Max value reached!</mat-error>
-            }
-            @if (form.get(item.name)?.getError('forbiddenName')) {
-              <mat-error>Only numbers!</mat-error>
-            }
-          </mat-form-field>
+        <mat-form-field>
+          <label matTextPrefix>{{item.name | titlecase}}</label>
+          <input type="number" [formControlName]="item.name" matInput>
+          <label matTextSuffix>{{item.unit}}</label>
+          @if (form.get(item.name)?.getError('required')) {
+          <mat-error><span>{{item.name | titlecase}}</span> required!</mat-error>
+          }
+          @if (form.get(item.name)?.getError('max')) {
+          <mat-error>Max value reached!</mat-error>
+          }
+          @if (form.get(item.name)?.getError('forbiddenName')) {
+          <mat-error>Only numbers!</mat-error>
+          }
+        </mat-form-field>
         }
       </td>
     </tr>

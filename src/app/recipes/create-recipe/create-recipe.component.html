@@ -36,7 +36,7 @@
     <div class="timers">
       <mat-form-field>
         <mat-label>Prep time:</mat-label>
-        <input type="text" matInput placeholder="min" formControlName="prepTime">
+        <input type="number" matInput placeholder="min" formControlName="prepTime">
         @if (form.controls.prepTime.getError('required')) {
         <mat-error>Calories required!</mat-error>
         }
@@ -49,7 +49,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>Cook time:</mat-label>
-        <input type="text" matInput placeholder="min" formControlName="cookTime">
+        <input type="number" matInput placeholder="min" formControlName="cookTime">
         @if (form.controls.cookTime.getError('required')) {
         <mat-error>Cook time required!</mat-error>
         }
@@ -62,7 +62,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>Serves:</mat-label>
-        <input type="text" matInput formControlName="serves">
+        <input type="number" matInput formControlName="serves">
         @if (form.controls.serves.getError('required')) {
         <mat-error>Serves amount required!</mat-error>
         }
