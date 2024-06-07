@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingBarComponent } from './loading-bar.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LoadingBarComponent', () => {
   let component: LoadingBarComponent;
   let fixture: ComponentFixture<LoadingBarComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LoadingBarComponent]
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [LoadingBarComponent, BrowserAnimationsModule]
     })
     .compileComponents();
     

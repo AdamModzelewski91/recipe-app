@@ -1,22 +1,16 @@
-
-import { Injectable, signal } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { signal } from '@angular/core';
 import { of } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class GlobalRecipesServiceMock {
-  // Mocking the getData method with a predefined Observable
+export const GlobalRecipesServiceMock = jasmine.createSpyObj(
+  'GlobalRecipesService',
+  ['voteRecipe', 'getGlobalList', 'searchRecipes', 'getPhotos', 'pagination'],
+);
 
-  pagination = signal<PageEvent>({
-    previousPageIndex: 0,
-    pageIndex: 0,
-    pageSize: 10,
-    length: 25,
-  });
-
-  getGlobalList() {
-    return of([]);
-  }
-}
+GlobalRecipesServiceMock.voteRecipe.and.returnValue(of([]));
+GlobalRecipesServiceMock.getGlobalList.and.returnValue(of([]));
+GlobalRecipesServiceMock.pagination = signal({
+  previousPageIndex: 0,
+  pageIndex: 0,
+  pageSize: 10,
+  length: 25,
+});
